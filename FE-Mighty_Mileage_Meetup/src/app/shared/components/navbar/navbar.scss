@@ -1,0 +1,247 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1100;
+  background: var(--navbar-bg);
+  color: var(--navbar-text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .brand-name a {
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--navbar-text);
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--accent);
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    .username {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-right: 1rem;
+      opacity: 0.9;
+    }
+
+    /* Shared style for links + buttons */
+    a,
+    button {
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--navbar-text);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        background: var(--accent);
+        color: var(--card-bg);
+        box-shadow: 0 0 6px var(--accent);
+      }
+    }
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+      position: relative;
+      width: 50px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      label {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: block;
+        cursor: pointer;
+      }
+
+      input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--border);
+        border-radius: 25px;
+        transition: background 0.4s ease, box-shadow 0.4s ease;
+
+        &::before {
+          content: "";
+          position: absolute;
+          height: 20px;
+          width: 20px;
+          left: 4px;
+          bottom: 3px;
+          background: var(--text-primary);
+          border-radius: 50%;
+          transition: transform 0.4s ease, background 0.4s ease;
+        }
+      }
+
+      /* Checked */
+      input:checked + .slider {
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+      }
+
+      input:checked + .slider::before {
+        transform: translateX(24px);
+        background: var(--card-bg);
+      }
+
+      /* Dark mode glow */
+      &.dark .slider {
+        box-shadow: 0 0 12px var(--accent), 0 0 25px var(--accent);
+      }
+    }
+  }
+}
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1100;
+  background: var(--navbar-bg);
+  color: var(--navbar-text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .brand-name a {
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--navbar-text);
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--accent);
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    .username {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-right: 1rem;
+      opacity: 0.9;
+    }
+
+    /* Shared style for auth links + buttons */
+    a,
+    button {
+      text-decoration: none;            /* ✅ removes underline */
+      padding: 0.45rem 1rem;
+      border: 2px solid var(--accent);  /* ✅ thicker border */
+      border-radius: 6px;
+      background: transparent;
+      color: var(--navbar-text);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        background: var(--accent);
+        color: var(--card-bg);
+        box-shadow: 0 0 6px var(--accent);
+      }
+    }
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+      position: relative;
+      width: 50px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      label {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: block;
+        cursor: pointer;
+      }
+
+      input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--border);
+        border-radius: 25px;
+        transition: background 0.4s ease, box-shadow 0.4s ease;
+
+        &::before {
+          content: "";
+          position: absolute;
+          height: 20px;
+          width: 20px;
+          left: 4px;
+          bottom: 3px;
+          background: var(--text-primary);
+          border-radius: 50%;
+          transition: transform 0.4s ease, background 0.4s ease;
+        }
+      }
+
+      input:checked + .slider {
+        background: var(--accent);
+        box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+      }
+
+      input:checked + .slider::before {
+        transform: translateX(24px);
+        background: var(--card-bg);
+      }
+
+      &.dark .slider {
+        box-shadow: 0 0 12px var(--accent), 0 0 25px var(--accent);
+      }
+    }
+  }
+}

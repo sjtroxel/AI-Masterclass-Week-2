@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  locationable: one
+  locationable_type: Locationable
+  zip_code: MyString
+  city: MyString
+  state: MyString
+  country: MyString
+  address: MyString
+
+two:
+  locationable: two
+  locationable_type: Locationable
+  zip_code: MyString
+  city: MyString
+  state: MyString
+  country: MyString
+  address: MyString

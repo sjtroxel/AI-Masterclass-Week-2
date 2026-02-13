@@ -1,0 +1,42 @@
+<h1>Mighty Mileage Meetup List</h1>
+<button class="add" (click)="openModal()">Create New Meetup</button>
+
+<app-meetup-card />
+
+@if (loading()) {
+  <p>Loading meetups...</p>
+} @else {
+  @if (meetups().length === 0) {
+    <p>No meetups yet. Create one to get started!</p>
+  } @else {
+    <div class="meetup-list">
+      @for (meetup of meetups(); track meetup.id) {
+        <div class="meetup-card">
+          <h3>{{ meetup.title }}</h3>
+          <p><strong>Activity:</strong> {{ meetup.activity }}</p>
+          <p><strong>Location:</strong> {{ meetup.location?.city || 'No location yet' }}</p>
+          <p><strong>Date & Time:</strong> {{ meetup.start_date_time | date:'short' }}</p>
+          <button (click)="openModal(meetup)">Edit</button>
+          <button (click)="deleteMeetup(meetup.id)">Delete</button>
+          <hr>
+        </div>
+      }
+    </div>
+  }
+}
+
+@if (showModal()) {
+  <div class="modal-backdrop" (click)="closeModal()"></div>
+  <div class="modal">
+    <button class="close-btn" (click)="closeModal()">X</button>
+    <h2>
+      @if (meetupToEdit()) {
+        Edit Meetup
+      } @else {
+        Create New Meetup
+      }
+    </h2>
+
+    <app-meetup-form></app-meetup-form>
+  </div>
+}

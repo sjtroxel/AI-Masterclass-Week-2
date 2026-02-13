@@ -1,0 +1,128 @@
+h1 {
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 1rem; // slightly less vertical spacing
+}
+
+.add {
+  display: block;
+  margin: 0.5rem auto 2rem auto; // center horizontally
+  padding: 0.45rem 1rem;         // match navbar button size
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--navbar-text);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    background: var(--accent);
+    color: var(--card-bg);
+    box-shadow: 0 0 6px var(--accent);
+  }
+}
+
+.meetup-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 0 2rem;
+
+  .meetup-card {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    color: var(--text);
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
+
+    h3 {
+      color: var(--primary);
+    }
+
+    button {
+      margin-top: 0.5rem;
+      padding: 0.45rem 1rem; // match navbar buttons
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--navbar-text);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        background: var(--accent);
+        color: var(--card-bg);
+        box-shadow: 0 0 6px var(--accent);
+      }
+    }
+  }
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 900;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 1.5rem 1rem;
+  border-radius: 12px;
+  width: 80vw;
+  max-width: 700px;
+  z-index: 1000;
+  box-shadow: var(--card-shadow);
+  animation: fadeIn 0.3s ease;
+
+  h2 {
+    text-align: center;
+    margin: 0 0 1rem 0;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--text);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  .meetup-form-container {
+    animation: slideFade 0.3s ease forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -45%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+@keyframes slideFade {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

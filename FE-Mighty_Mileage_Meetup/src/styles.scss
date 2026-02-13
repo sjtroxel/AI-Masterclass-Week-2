@@ -1,0 +1,173 @@
+/* Import Nunito from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+/* -------------------------------
+   1. CSS RESET & BASE STYLES
+-------------------------------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%; /* Make html and body fill the viewport */
+  padding-top: 70px; /* navbar height */
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: var(--background);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+* {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* -------------------------------
+   2. THEME VARIABLES
+-------------------------------- */
+:root {
+  /* Light Theme */
+  --background: #e6fff2;          /* Minty green background */
+  --text-primary: #083d77;        /* Dark blue */
+  --text-secondary: #2e6d32;      /* Dark green */
+  --accent: #32a852;              /* Vibrant green for links/icons */
+  --accent-hover: #289442;        /* Hover shade */
+  --error: #d62828;               /* Red for errors */
+  --card-bg: #ffffff;             /* White cards */
+  --border: #cce3d6;              /* Light border */
+
+  /* Buttons */
+  --button-bg: #012f50;           /* Strong blue */
+  --button-hover: #005fa3;        /* Darker blue */
+
+  /* Navbar */
+  --navbar-bg: #ffffff;
+  --navbar-text: #083d77;
+}
+
+body.dark-mode {
+  /* Dark Theme */
+  --background: #003322;          /* Deep dark green */
+  --text-primary: #d0f4ff;        /* Light blue text */
+  --text-secondary: #98f5e1;      /* Minty highlight */
+  --accent: #0fffcf;              /* Neon-ish accent */
+  --accent-hover: #09e6b6;        /* Darker neon hover */
+  --error: #ff4d6d;               /* Neon pink/red */
+  --card-bg: #0a2b1f;             /* Dark card background */
+  --border: #145a46;              /* Subtle green border */
+
+  /* Buttons */
+  --button-bg: #012f50;
+  --button-hover: #1c75d8;
+
+  /* Navbar */
+  --navbar-bg: #0a2b1f;
+  --navbar-text: #d0f4ff;
+}
+
+/* -------------------------------
+   3. GLOBAL TYPOGRAPHY
+-------------------------------- */
+h1, h2, h3 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-bottom: 0.75rem;
+}
+
+/* -------------------------------
+   4. GLOBAL LAYOUT
+-------------------------------- */
+.container {
+  width: 90%;
+  // max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: calc(100vh - 70px); /* Ensure container fills remaining viewport */
+}
+
+/* -------------------------------
+   5. BUTTON STYLES
+-------------------------------- */
+button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--button-bg);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.02);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* -------------------------------
+   6. FORM ELEMENTS
+-------------------------------- */
+input, select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+
+  &:focus {
+    outline: 2px solid var(--accent);
+  }
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  display: inline-block;
+}
+
+.error {
+  color: var(--error);
+  font-size: 0.85rem;
+}
+
+/* -------------------------------
+   7. CARD STYLES
+-------------------------------- */
+.meetup-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: background 0.3s ease, color 0.3s ease;
+
+  h3 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: var(--text-secondary);
+  }
+
+  button {
+    margin-right: 0.5rem;
+  }
+}

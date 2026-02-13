@@ -1,0 +1,13 @@
+<p>meetup-card works!</p>
+@if (meetup()) {
+  <div class="meetup-card">
+    <h3>{{ meetup()!.title }}</h3>
+    <p><strong>Activity:</strong> {{ meetup()!.activity }}</p>
+    <p><strong>Location:</strong> {{ meetup()!.location?.city || 'No location yet' }}</p>
+    <p><strong>Date & Time:</strong> {{ meetup()!.start_date_time | date:'short' }}</p>
+
+    <button (click)="editMeetup()">Edit</button>
+    <button (click)="deleteMeetup()">Delete</button>
+    <hr>
+  </div>
+}
