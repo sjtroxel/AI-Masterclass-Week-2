@@ -3,9 +3,16 @@
   <p><strong>Activity:</strong> {{ meetup().activity }}</p>
   <p><strong>Location:</strong> {{ meetup().location?.city || 'No location yet' }}</p>
   <p><strong>Date & Time:</strong> {{ meetup().start_date_time | date:'short' }}</p>
-  @if (meetup().user?.id === currentUserId()) {
+  <p><strong>Participants:</strong> {{ participantCount() }}</p>
+  @if (isOwner()) {
     <button (click)="edit.emit(meetup())">Edit</button>
     <button (click)="delete.emit(meetup().id)">Delete</button>
+  } @else {
+    @if (isParticipant()) {
+      <button (click)="leaveMeetup()">Leave Meetup</button>
+    } @else {
+      <button (click)="joinMeetup()">Join Meetup</button>
+    }
   }
-  <hr>
+
 </div>
