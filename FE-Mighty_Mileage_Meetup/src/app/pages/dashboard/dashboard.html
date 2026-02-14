@@ -9,17 +9,12 @@
   } @else {
     <div class="meetup-list">
       @for (meetup of meetups(); track meetup.id) {
-        <div class="meetup-card">
-          <h3>{{ meetup.title }}</h3>
-          <p><strong>Activity:</strong> {{ meetup.activity }}</p>
-          <p><strong>Location:</strong> {{ meetup.location?.city || 'No location yet' }}</p>
-          <p><strong>Date & Time:</strong> {{ meetup.start_date_time | date:'short' }}</p>
-          @if (meetup.user?.id === currentUserId) {
-            <button (click)="openModal(meetup)">Edit</button>
-            <button (click)="deleteMeetup(meetup.id)">Delete</button>
-          }
-          <hr>
-        </div>
+        <app-meetup-card
+          [meetup]="meetup"
+          [currentUserId]="currentUserId"
+          (edit)="openModal($event)"
+          (delete)="deleteMeetup($event)"
+        />
       }
     </div>
   }

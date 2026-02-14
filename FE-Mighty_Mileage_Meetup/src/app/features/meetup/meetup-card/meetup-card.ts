@@ -1,8 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Meetup } from '../../../shared/models/meetup';
-import { MeetupService } from '../../../core/services/meetup';
 import { DatePipe } from '@angular/common';
-
 
 @Component({
   selector: 'app-meetup-card',
@@ -12,23 +10,9 @@ import { DatePipe } from '@angular/common';
   styleUrl: './meetup-card.scss'
 })
 export class MeetupCardComponent {
-  private meetupService = inject(MeetupService);
+  meetup = input.required<Meetup>();
+  currentUserId = input<number | null>(null);
 
-  meetup = signal<Meetup | null>(null);
-
-  setMeetup(m: Meetup) {
-    this.meetup.set(m);
-  }
-
-  editMeetup() {
-    if (this.meetup()) {
-      this.meetupService.setMeetupToEdit(this.meetup()!);
-    }
-  }
-
-  deleteMeetup() {
-    if (this.meetup()) {
-      this.meetupService.deleteMeetup(this.meetup()!.id);
-    }
-  }
+  edit = output<Meetup>();
+  delete = output<number>();
 }
