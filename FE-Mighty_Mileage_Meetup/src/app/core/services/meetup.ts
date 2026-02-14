@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Meetup } from '../../shared/models/meetup';
+import { Meetup, MeetupParticipant } from '../../shared/models/meetup';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -117,6 +117,40 @@ export class MeetupService {
         this.meetupsSignal.set(current.filter((m) => m.id !== id));
       },
       error: (err) => console.error('Error deleting meetup:', err),
+    });
+  }
+
+  // Join a meetup
+  joinMeetup(id: number) {
+    this.http.post<MeetupParticipant>(`${this.apiUrl}/${id}/join`, {}).subscribe({
+      next: (participant) => {
+        const current = this.ensureArray(this.meetupsSignal());
+        this.meetupsSignal.set(
+          current.map((m) =>
+            m.id === id
+              ? { ...m, meetup_participants: [...(m.meetup_participants || []), participant] }
+              : m
+          )
+        );
+      },
+      error: (err) => console.error('Error joining meetup:', err),
+    });
+  }
+
+  // Leave a meetup
+  leaveMeetup(id: number, userId: number) {
+    this.http.delete<void>(`${this.apiUrl}/${id}/leave`).subscribe({
+      next: () => {
+        const current = this.ensureArray(this.meetupsSignal());
+        this.meetupsSignal.set(
+          current.map((m) =>
+            m.id === id
+              ? { ...m, meetup_participants: (m.meetup_participants || []).filter((p) => p.user_id !== userId) }
+              : m
+          )
+        );
+      },
+      error: (err) => console.error('Error leaving meetup:', err),
     });
   }
 }

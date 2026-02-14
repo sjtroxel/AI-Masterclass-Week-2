@@ -8,6 +8,13 @@ export interface MeetupUser {
   email: string;
 }
 
+export interface MeetupParticipant {
+  id: number;
+  user_id: number;
+  meetup_id: number;
+  user: MeetupUser;
+}
+
 export interface Meetup {
   id: number;
   title?: string;
@@ -17,4 +24,5 @@ export interface Meetup {
   guests: number;
   user?: MeetupUser;
   location?: AppLocation;
+  meetup_participants?: MeetupParticipant[];
 }
