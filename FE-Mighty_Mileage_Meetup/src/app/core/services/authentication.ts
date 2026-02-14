@@ -35,6 +35,16 @@ export class AuthenticationService {
     return localStorage.getItem('token');
   }
 
+  // === User ID Handling ===
+  setUserId(id: number) {
+    localStorage.setItem('user_id', id.toString());
+  }
+
+  getUserId(): number | null {
+    const id = localStorage.getItem('user_id');
+    return id ? parseInt(id, 10) : null;
+  }
+
   // === Username Handling ===
   setUser(username: string) {
     localStorage.setItem('username', username);
@@ -42,6 +52,7 @@ export class AuthenticationService {
 
   clearUser() {
     localStorage.removeItem('username');
+    localStorage.removeItem('user_id');
   }
 
   currentUser() {

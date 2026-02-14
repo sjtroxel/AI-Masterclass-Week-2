@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://mightymileagemeetup.onrender.com/',
+  apiUrl: 'https://mightymileagemeetup.onrender.com',
 };

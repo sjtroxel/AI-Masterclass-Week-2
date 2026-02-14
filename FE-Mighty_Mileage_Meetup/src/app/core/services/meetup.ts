@@ -2,7 +2,6 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Meetup } from '../../shared/models/meetup';
 import { environment } from '../../../environments/environment';
-import { AuthenticationService } from './authentication';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +9,7 @@ import { AuthenticationService } from './authentication';
 export class MeetupService {
   private readonly apiUrl = `${environment.apiUrl}/meetups`;
 
-  constructor(private http: HttpClient, private authService: AuthenticationService) {}
+  constructor(private http: HttpClient) {}
 
   // Signals
   private meetupsSignal = signal<Meetup[]>([]);
@@ -39,8 +38,7 @@ export class MeetupService {
   // Load meetups from API
   loadMeetups() {
     this.loadingSignal.set(true);
-    const token = this.authService.getToken();
-    this.http.get<any>(this.apiUrl, { headers: { Authorization: `Bearer ${token}` } }).subscribe({
+    this.http.get<any>(this.apiUrl).subscribe({
       next: (data) => {
         this.meetupsSignal.set(JSON.parse(data.meetups));
         this.loadingSignal.set(false);
@@ -53,45 +51,36 @@ export class MeetupService {
     });
   }
 
-  // Add a new meetup (payload wrapped in { meetup: ... } with token)
+  // Add a new meetup
   addMeetup(newMeetup: Meetup) {
-  const token = this.authService.getToken();
-  console.log('JWT token:', token);
-
-  const payload = {
-    meetup: {
-      title: newMeetup.title,
-      activity: newMeetup.activity,
-      start_date_time: new Date(newMeetup.start_date_time).toISOString(), // <-- convert to UTC
-      end_date_time: new Date(newMeetup.end_date_time).toISOString(),     // <-- convert to UTC
-      guests: newMeetup.guests,
-      location_attributes: {
-        address: newMeetup.location?.address,
-        city: newMeetup.location?.city,
-        state: newMeetup.location?.state,
-        zip_code: newMeetup.location?.zip_code,
-        country: newMeetup.location?.country,
+    const payload = {
+      meetup: {
+        title: newMeetup.title,
+        activity: newMeetup.activity,
+        start_date_time: new Date(newMeetup.start_date_time).toISOString(),
+        end_date_time: new Date(newMeetup.end_date_time).toISOString(),
+        guests: newMeetup.guests,
+        location_attributes: {
+          address: newMeetup.location?.address,
+          city: newMeetup.location?.city,
+          state: newMeetup.location?.state,
+          zip_code: newMeetup.location?.zip_code,
+          country: newMeetup.location?.country,
+        },
       },
-    },
-  };
+    };
 
-  console.log('Payload:', payload);
-
-  this.http
-    .post<Meetup>(this.apiUrl, payload, { headers: { Authorization: `Bearer ${token}` } })
-    .subscribe({
+    this.http.post<Meetup>(this.apiUrl, payload).subscribe({
       next: (created) => {
         const current = this.ensureArray(this.meetupsSignal());
         this.meetupsSignal.set([...current, created]);
       },
       error: (err) => console.error('Error adding meetup:', err),
     });
-}
+  }
 
   // Update existing meetup
   updateMeetup(updatedMeetup: Meetup) {
-    const token = this.authService.getToken();
-
     const payload = {
       meetup: {
         title: updatedMeetup.title,
@@ -109,7 +98,7 @@ export class MeetupService {
       },
     };
 
-    this.http.put<Meetup>(`${this.apiUrl}/${updatedMeetup.id}`, payload, { headers: { Authorization: `Bearer ${token}` } }).subscribe({
+    this.http.put<Meetup>(`${this.apiUrl}/${updatedMeetup.id}`, payload).subscribe({
       next: (saved) => {
         const current = this.ensureArray(this.meetupsSignal());
         this.meetupsSignal.set(
@@ -122,9 +111,7 @@ export class MeetupService {
 
   // Delete a meetup
   deleteMeetup(id: number) {
-    const token = this.authService.getToken();
-
-    this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: { Authorization: `Bearer ${token}` } }).subscribe({
+    this.http.delete<void>(`${this.apiUrl}/${id}`).subscribe({
       next: () => {
         const current = this.ensureArray(this.meetupsSignal());
         this.meetupsSignal.set(current.filter((m) => m.id !== id));

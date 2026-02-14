@@ -39,6 +39,8 @@ export class SignupComponent {
         // Optionally log the user in automatically
         if (res.token) {
           this.authService.setToken(res.token);
+          this.authService.setUserId(res.user.id);
+          this.authService.setUser(res.user.username);
           this.router.navigate(['/']);
         } else {
           this.router.navigate(['/login']);
