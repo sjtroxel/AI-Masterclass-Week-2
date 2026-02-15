@@ -1,0 +1,17 @@
+<section class="comment-list">
+  <h3 class="comment-list__heading">Comments</h3>
+
+  @if (comments().length === 0) {
+    <p class="comment-list__empty">No comments yet. Be the first!</p>
+  } @else {
+    @for (comment of comments(); track comment.id) {
+      <div class="comment">
+        <div class="comment__meta">
+          <span class="comment__author">{{ comment.user.username }}</span>
+          <span class="comment__timestamp">{{ comment.created_at | date:'medium' }}</span>
+        </div>
+        <p class="comment__content">{{ comment.content }}</p>
+      </div>
+    }
+  }
+</section>

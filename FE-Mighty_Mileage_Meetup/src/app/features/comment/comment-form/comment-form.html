@@ -1,0 +1,17 @@
+<form class="comment-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <textarea
+    class="comment-form__textarea"
+    formControlName="content"
+    rows="3"
+    maxlength="2000"
+    placeholder="Add a comment..."
+  ></textarea>
+  <div class="comment-form__footer">
+    <span class="comment-form__counter" [class.near-limit]="charCount() > 1800">
+      {{ charCount() }} / 2000
+    </span>
+    <button class="comment-form__submit" type="submit" [disabled]="form.invalid">
+      Post Comment
+    </button>
+  </div>
+</form>

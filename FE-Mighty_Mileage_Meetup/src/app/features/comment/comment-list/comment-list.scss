@@ -1,0 +1,53 @@
+.comment-list {
+  margin-top: 1.5rem;
+
+  &__heading {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+    margin: 0 0 0.75rem 0;
+    color: var(--text);
+  }
+
+  &__empty {
+    color: var(--text);
+    opacity: 0.6;
+    font-size: 0.9rem;
+  }
+}
+
+.comment {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background: var(--card-bg);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+
+  &__meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.35rem;
+  }
+
+  &__author {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+
+  &__timestamp {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    color: var(--text);
+  }
+
+  &__content {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+}
