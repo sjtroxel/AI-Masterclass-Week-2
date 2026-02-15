@@ -39,6 +39,12 @@
         <span>{{ m.meetup_participants?.length ?? 0 }}</span>
       </div>
     </div>
+
+    <section class="comment-section">
+      <app-comment-list [comments]="commentService.comments()" />
+      <div #commentBottom></div>
+      <app-comment-form [meetupId]="meetupId" />
+    </section>
   } @else {
     <p class="not-found">Meetup not found.</p>
   }

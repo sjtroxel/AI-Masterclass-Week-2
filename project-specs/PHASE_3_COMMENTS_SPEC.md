@@ -99,15 +99,54 @@ the comment list from the inline data without a redundant HTTP call.
 
 ---
 
-## Step 3: Update MeetupDetailComponent ⏳ pending
+## Step 3: Update MeetupDetailComponent 🔄 in progress
 
 **`pages/meetup-detail/meetup-detail.ts`** + `.html`
 
-1. Inject `CommentService`
-2. `effect()` watching `meetupDetail` → calls `commentService.seedComments(m.comments ?? [])` when resolved
-3. `ngOnDestroy` calls `commentService.clearComments()`
-4. Embed `<app-comment-list [comments]="commentService.comments()" />`
-5. Embed `<app-comment-form [meetupId]="meetupId" />` (meetupId stored from route params)
+### TypeScript changes
+
+- New imports: `DestroyRef`, `ElementRef`, `ViewChild`, `effect` from `@angular/core`; `CommentService`, `CommentListComponent`, `CommentFormComponent`
+- Inject `CommentService` (protected — accessible in template)
+- Inject `DestroyRef`
+- Add `@ViewChild('commentBottom') commentBottom?: ElementRef`
+- Store `meetupId: number` property (set in `ngOnInit`, bound to `<app-comment-form>`)
+- Add `CommentListComponent` and `CommentFormComponent` to the `imports` array
+
+**Constructor (new):**
+```typescript
+constructor() {
+  effect(() => {
+    const m = this.meetup();
+    if (m) {
+      this.commentService.seedComments(m.comments ?? []);
+      setTimeout(() =>
+        this.commentBottom?.nativeElement?.scrollIntoView({ behavior: 'smooth' })
+      );
+    }
+  });
+  this.destroyRef.onDestroy(() => this.commentService.clearComments());
+}
+```
+
+- `effect()` with `if (m)` guard seeds the comment signal when meetup data arrives
+- `setTimeout` defers the auto-scroll one tick so Angular has rendered the DOM first
+- `DestroyRef.onDestroy` clears comments on navigation away — no `ngOnDestroy` interface needed
+- `clearComments()` prevents stale comments from "ghosting" when navigating between meetups
+
+### Template changes
+
+Add a `<section class="comment-section">` block inside `@if (meetup(); as m)`, after `.detail-card`:
+
+```html
+<section class="comment-section">
+  <app-comment-list [comments]="commentService.comments()" />
+  <div #commentBottom></div>
+  <app-comment-form [meetupId]="meetupId" />
+</section>
+```
+
+**Layout:** Comment list (oldest → newest) → scroll anchor → form below the fold.
+On initial load, auto-scroll places the newest comment at the bottom of the viewport.
 
 ---
 

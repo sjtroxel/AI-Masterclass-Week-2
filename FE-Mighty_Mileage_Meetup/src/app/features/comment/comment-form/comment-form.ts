@@ -13,6 +13,7 @@ import { CommentService } from '../../../core/services/comment';
 export class CommentFormComponent {
   private commentService = inject(CommentService);
   private destroyRef = inject(DestroyRef);
+  private fb = inject(FormBuilder);
 
   meetupId = input.required<number>();
 
@@ -23,7 +24,7 @@ export class CommentFormComponent {
     content: ['', [Validators.required, Validators.maxLength(2000)]],
   });
 
-  constructor(private fb: FormBuilder) {
+  constructor() {
     this.form.get('content')!.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((val) => this.contentLengthSignal.set((val ?? '').length));

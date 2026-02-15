@@ -62,6 +62,11 @@ export class CommentService {
       });
   }
 
+  // Prime the signal from inline meetup data (no HTTP call needed)
+  seedComments(comments: Comment[]) {
+    this.commentsSignal.set(comments);
+  }
+
   // Reset state when navigating away
   clearComments() {
     this.commentsSignal.set([]);
