@@ -22,6 +22,12 @@ export const routes: Routes = [
     canActivate: [noAuthGuard],
   },
   {
+    path: 'meetups/:id',
+    loadComponent: () =>
+      import('./pages/meetup-detail/meetup-detail').then((c) => c.MeetupDetailComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: '**',
     redirectTo: '',
   },

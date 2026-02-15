@@ -1,0 +1,45 @@
+<a routerLink="/" class="back-link">Back to Dashboard</a>
+
+@if (loading()) {
+  <p class="loading">Loading meetup...</p>
+} @else {
+  @if (meetup(); as m) {
+    <div class="detail-card">
+      <h1>{{ m.title }}</h1>
+      <span class="activity-badge">{{ m.activity }}</span>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>Start</strong>
+          <span>{{ m.start_date_time | date:'medium' }}</span>
+        </div>
+        <div class="info-item">
+          <strong>End</strong>
+          <span>{{ m.end_date_time | date:'medium' }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Max Guests</strong>
+          <span>{{ m.guests }}</span>
+        </div>
+        <div class="info-item">
+          <strong>Organizer</strong>
+          <span>{{ m.user?.first_name }} {{ m.user?.last_name }}</span>
+        </div>
+      </div>
+
+      @if (m.location) {
+        <div class="location">
+          <strong>Location</strong>
+          <span>{{ m.location.address }}, {{ m.location.city }}, {{ m.location.state }} {{ m.location.zip_code }}</span>
+        </div>
+      }
+
+      <div class="participants">
+        <strong>Participants</strong>
+        <span>{{ m.meetup_participants?.length ?? 0 }}</span>
+      </div>
+    </div>
+  } @else {
+    <p class="not-found">Meetup not found.</p>
+  }
+}

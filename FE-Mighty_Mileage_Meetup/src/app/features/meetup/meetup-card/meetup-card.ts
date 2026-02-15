@@ -2,11 +2,12 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { Meetup } from '../../../shared/models/meetup';
 import { MeetupService } from '../../../core/services/meetup';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-meetup-card',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: './meetup-card.html',
   styleUrl: './meetup-card.scss'
 })
