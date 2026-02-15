@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Meetup, MeetupParticipant } from '../../shared/models/meetup';
+import { Comment } from '../../shared/models/comment';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -15,11 +16,13 @@ export class MeetupService {
   private meetupsSignal = signal<Meetup[]>([]);
   private meetupToEditSignal = signal<Meetup | null>(null);
   private loadingSignal = signal<boolean>(false);
+  private meetupDetailSignal = signal<(Meetup & { comments?: Comment[] }) | null>(null);
 
   // Exposed signals
   meetups = this.meetupsSignal.asReadonly();
   meetupToEdit = this.meetupToEditSignal.asReadonly();
   loading = this.loadingSignal.asReadonly();
+  meetupDetail = this.meetupDetailSignal.asReadonly();
 
   // Setters
   setMeetupToEdit(meetup: Meetup) {
@@ -33,6 +36,22 @@ export class MeetupService {
   // --- Helper to ensure iterable ---
   private ensureArray(data: any): Meetup[] {
     return Array.isArray(data) ? data : [];
+  }
+
+  // Load a single meetup by ID (extended view includes comments)
+  getMeetup(id: number) {
+    this.loadingSignal.set(true);
+    this.http.get<any>(`${this.apiUrl}/${id}`).subscribe({
+      next: (data) => {
+        this.meetupDetailSignal.set(data);
+        this.loadingSignal.set(false);
+      },
+      error: (err) => {
+        console.error('Error loading meetup:', err);
+        this.meetupDetailSignal.set(null);
+        this.loadingSignal.set(false);
+      },
+    });
   }
 
   // Load meetups from API
