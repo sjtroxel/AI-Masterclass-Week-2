@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_06_164341) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_15_150319) do
   create_table "comments", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "meetup_id", null: false
@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_06_164341) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["meetup_id"], name: "index_meetup_participants_on_meetup_id"
-    t.index ["user_id"], name: "index_meetup_participants_on_user_id"
+    t.index ["user_id", "meetup_id"], name: "index_meetup_participants_on_user_id_and_meetup_id", unique: true
   end
 
   create_table "meetups", force: :cascade do |t|

@@ -133,7 +133,10 @@ export class MeetupService {
           )
         );
       },
-      error: (err) => console.error('Error joining meetup:', err),
+      error: (err) => {
+        console.error('Error joining meetup:', err);
+        window.alert('Failed to join meetup. Please try again.');
+      },
     });
   }
 
@@ -150,7 +153,10 @@ export class MeetupService {
           )
         );
       },
-      error: (err) => console.error('Error leaving meetup:', err),
+      error: (err) => {
+        console.error('Error leaving meetup:', err);
+        window.alert('Failed to leave meetup. Please try again.');
+      },
     });
   }
 }
