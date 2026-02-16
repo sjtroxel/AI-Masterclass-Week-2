@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, OnInit, ViewChild, effect, inject } from '@angular/core';
+import { Component, DestroyRef, ElementRef, OnInit, ViewChild, computed, effect, inject, input } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { MeetupService } from '../../core/services/meetup';
@@ -21,6 +21,10 @@ export class MeetupDetailComponent implements OnInit {
 
   @ViewChild('commentBottom') commentBottom?: ElementRef;
 
+  /** Optional input for modal usage — when provided, route param is ignored */
+  meetupIdInput = input<number | undefined>(undefined, { alias: 'meetupId' });
+  isModal = computed(() => this.meetupIdInput() !== undefined);
+
   meetup = this.meetupService.meetupDetail;
   loading = this.meetupService.loading;
   meetupId!: number;
@@ -30,9 +34,11 @@ export class MeetupDetailComponent implements OnInit {
       const m = this.meetup();
       if (m) {
         this.commentService.seedComments(m.comments ?? []);
-        setTimeout(() =>
-          this.commentBottom?.nativeElement?.scrollIntoView({ behavior: 'smooth' })
-        );
+        if (!this.isModal()) {
+          setTimeout(() =>
+            this.commentBottom?.nativeElement?.scrollIntoView({ behavior: 'smooth' })
+          );
+        }
       }
     });
 
@@ -40,7 +46,8 @@ export class MeetupDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.meetupId = Number(this.route.snapshot.paramMap.get('id'));
+    const inputId = this.meetupIdInput();
+    this.meetupId = inputId ?? Number(this.route.snapshot.paramMap.get('id'));
     this.meetupService.getMeetup(this.meetupId);
   }
 }

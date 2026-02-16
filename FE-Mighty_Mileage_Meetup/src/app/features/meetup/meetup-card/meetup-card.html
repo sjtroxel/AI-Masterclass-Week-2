@@ -1,8 +1,8 @@
-<div class="rounded-xl border border-border bg-card shadow-md hover:shadow-lg transition-shadow p-5">
+<div class="rounded-xl border border-border bg-card shadow-glow transition-all duration-300 p-6">
   <!-- Header: Title + Activity Badge -->
-  <div class="flex items-start justify-between mb-3">
-    <h3 class="text-lg font-bold text-text-primary m-0">{{ meetup().title }}</h3>
-    <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold
+  <div class="flex items-start justify-between gap-3 mb-3">
+    <h3 class="text-xl font-bold tracking-tight text-text-primary m-0">{{ meetup().title }}</h3>
+    <span class="shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold
                  bg-accent/15 text-accent">
       @switch (meetup().activity) {
         @case ('run') { 🏃 }
@@ -14,7 +14,7 @@
   </div>
 
   <!-- Info rows -->
-  <div class="space-y-1.5 text-sm text-text-secondary mb-4">
+  <div class="space-y-1.5 text-sm text-text-secondary/80 leading-relaxed mb-4">
     <p class="flex items-center gap-2 m-0">
       📍 {{ meetup().location?.city || 'No location yet' }}
     </p>
@@ -27,8 +27,8 @@
   </div>
 
   <!-- Actions -->
-  <div class="flex items-center gap-2 pt-3 border-t border-border">
-    <a [routerLink]="['/meetups', meetup().id]" class="btn-secondary">View Details</a>
+  <div class="flex items-center gap-2 pt-2">
+    <button class="btn-secondary" (click)="viewDetails.emit(meetup().id)">View Details</button>
     @if (isOwner()) {
       <button class="btn-secondary" (click)="edit.emit(meetup())">Edit</button>
       <button class="btn-danger" (click)="delete.emit(meetup().id)">Delete</button>

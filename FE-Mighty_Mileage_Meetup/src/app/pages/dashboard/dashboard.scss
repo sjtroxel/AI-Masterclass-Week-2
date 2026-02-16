@@ -47,9 +47,10 @@ h1 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: var(--card-bg);
+  background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+  backdrop-filter: blur(12px);
   color: var(--text);
-  padding: 1.5rem 1rem;
+  padding: 1rem 1rem 0.75rem;
   border-radius: 12px;
   width: 80vw;
   max-width: 700px;
@@ -91,4 +92,44 @@ h1 {
 @keyframes slideFade {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Detail Modal — scrollable overlay for meetup detail + comments */
+.detail-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: color-mix(in srgb, var(--card-bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+  color: var(--text);
+  padding: 1rem 1.5rem 0.75rem;
+  border-radius: 12px;
+  width: 90vw;
+  max-width: 700px;
+  height: 75vh;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: var(--card-shadow);
+  animation: fadeIn 0.3s ease;
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--text);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
 }

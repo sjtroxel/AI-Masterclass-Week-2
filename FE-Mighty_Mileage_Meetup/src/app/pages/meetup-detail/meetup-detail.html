@@ -1,4 +1,6 @@
-<a routerLink="/" class="btn-secondary back-link">Back to Dashboard</a>
+@if (!isModal()) {
+  <a routerLink="/" class="btn-secondary back-link">Back to Dashboard</a>
+}
 
 @if (loading()) {
   <p class="loading">Loading meetup...</p>

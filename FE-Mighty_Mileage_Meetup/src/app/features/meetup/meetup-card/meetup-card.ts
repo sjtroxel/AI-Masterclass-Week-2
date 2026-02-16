@@ -2,12 +2,11 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { Meetup } from '../../../shared/models/meetup';
 import { MeetupService } from '../../../core/services/meetup';
 import { DatePipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-meetup-card',
   standalone: true,
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe],
   templateUrl: './meetup-card.html',
   styleUrl: './meetup-card.scss'
 })
@@ -19,6 +18,7 @@ export class MeetupCardComponent {
 
   edit = output<Meetup>();
   delete = output<number>();
+  viewDetails = output<number>();
 
   isOwner = computed(() => this.meetup().user?.id === this.currentUserId());
 

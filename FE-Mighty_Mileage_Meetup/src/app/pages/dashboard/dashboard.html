@@ -14,6 +14,7 @@
           [currentUserId]="currentUserId"
           (edit)="openModal($event)"
           (delete)="deleteMeetup($event)"
+          (viewDetails)="openDetailModal($event)"
         />
       }
     </div>
@@ -33,5 +34,13 @@
     </h2>
 
     <app-meetup-form></app-meetup-form>
+  </div>
+}
+
+@if (showDetailModal()) {
+  <div class="modal-backdrop" (click)="closeDetailModal()"></div>
+  <div class="detail-modal">
+    <button class="close-btn" (click)="closeDetailModal()">&times;</button>
+    <app-meetup-detail [meetupId]="detailMeetupId()!" />
   </div>
 }

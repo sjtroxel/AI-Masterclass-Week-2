@@ -1,17 +1,19 @@
-<section class="comment-list">
-  <h3 class="comment-list__heading">Comments</h3>
+<section class="mt-6">
+  <h3 class="text-sm font-semibold uppercase tracking-wide text-text-secondary mb-3">Comments</h3>
 
   @if (comments().length === 0) {
-    <p class="comment-list__empty">No comments yet. Be the first!</p>
+    <p class="text-text-secondary text-sm opacity-60">No comments yet. Be the first!</p>
   } @else {
-    @for (comment of comments(); track comment.id) {
-      <div class="comment">
-        <div class="comment__meta">
-          <span class="comment__author">{{ comment.user.username }}</span>
-          <span class="comment__timestamp">{{ comment.created_at | date:'medium' }}</span>
+    <div class="space-y-3">
+      @for (comment of comments(); track comment.id) {
+        <div class="rounded-xl border border-border bg-card shadow-glow transition-all duration-300 p-4">
+          <div class="flex items-baseline gap-3 mb-1">
+            <span class="font-semibold text-sm text-text-primary">{{ comment.user.username }}</span>
+            <span class="text-xs text-text-secondary opacity-60">{{ comment.created_at | date:'medium' }}</span>
+          </div>
+          <p class="m-0 text-sm text-text-secondary/80 leading-relaxed">{{ comment.content }}</p>
         </div>
-        <p class="comment__content">{{ comment.content }}</p>
-      </div>
-    }
+      }
+    </div>
   }
 </section>

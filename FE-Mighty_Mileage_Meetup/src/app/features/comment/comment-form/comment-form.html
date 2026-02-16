@@ -1,13 +1,21 @@
-<form class="comment-form" [formGroup]="form" (ngSubmit)="onSubmit()">
-  <textarea
-    class="comment-form__textarea"
-    formControlName="content"
-    rows="3"
-    maxlength="2000"
-    placeholder="Add a comment..."
-  ></textarea>
-  <div class="comment-form__footer">
-    <span class="comment-form__counter" [class.near-limit]="charCount() > 1800">
+<form class="mt-4 flex flex-col gap-2" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="rounded-xl border border-border bg-card p-1 transition-all duration-300
+              focus-within:ring-2 focus-within:ring-accent/50">
+    <textarea
+      class="w-full resize-y min-h-20 p-3 text-sm font-[inherit] leading-relaxed
+             bg-transparent text-text-primary placeholder:text-text-secondary/50
+             border-0 outline-none"
+      formControlName="content"
+      rows="3"
+      maxlength="2000"
+      placeholder="Add a comment..."
+    ></textarea>
+  </div>
+  <div class="flex items-center justify-between">
+    <span class="text-xs text-text-secondary/60 transition-all duration-200"
+          [class.text-accent]="charCount() > 1800"
+          [class.font-semibold]="charCount() > 1800"
+          [class.opacity-100]="charCount() > 1800">
       {{ charCount() }} / 2000
     </span>
     <button class="btn-primary" type="submit" [disabled]="form.invalid">

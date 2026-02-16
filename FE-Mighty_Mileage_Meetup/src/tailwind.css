@@ -21,6 +21,33 @@
   --color-button-hover: var(--button-hover);
   --color-navbar: var(--navbar-bg);
   --color-navbar-text: var(--navbar-text);
+  --color-accent-glow: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* The Universal Switch - works on html or body */
+.dark-mode {
+  --background: #003322 !important;
+  --card-bg: #0a2b1f !important;
+  --text-primary: #e6fff2 !important;
+  --text-secondary: #a3cfbb !important;
+  --border: #145a46 !important;
+  --accent: #0fffcf !important;
+
+  /* Redefine Tailwind theme variables explicitly for dark mode */
+  --color-card: var(--card-bg);
+  --color-background: var(--background);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-accent: var(--accent);
+}
+
+@utility shadow-glow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .shadow-glow {
+  box-shadow: 0 0 20px 3px var(--color-accent-glow) !important;
 }
 
 /* -------------------------------------------------------
@@ -63,9 +90,9 @@
   pointer-events: none;
 }
 
-/* Dark mode: dark text on bright accent for high contrast */
-body.dark-mode .btn-primary {
-  color: var(--background);
+/* Fix the button contrast in dark mode using the universal selector */
+.dark-mode .btn-primary {
+  color: var(--background) !important;
 }
 
 .btn-secondary {
@@ -100,9 +127,8 @@ body.dark-mode .btn-primary {
   pointer-events: none;
 }
 
-/* Dark mode: dark text when secondary fills on hover */
-body.dark-mode .btn-secondary:hover {
-  color: var(--background);
+.dark-mode .btn-secondary:hover {
+  color: var(--background) !important;
 }
 
 .btn-danger {

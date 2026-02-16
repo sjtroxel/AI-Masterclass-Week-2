@@ -13,12 +13,12 @@
 | Component | Template | SCSS | Notes |
 |-----------|----------|------|-------|
 | `navbar` | `shared/components/navbar/` | Has styles | Fixed top, theme toggle, auth links |
-| `meetup-card` | `features/meetup/meetup-card/` | **Empty** — uses Tailwind utilities | Card layout, activity badge, action buttons |
+| `meetup-card` | `features/meetup/meetup-card/` | **Empty** — uses Tailwind utilities | Card layout, activity badge, `viewDetails` output event |
 | `meetup-form` | `features/meetup/meetup-form/` | Has styles | 3-section layout, radio buttons |
-| `comment-list` | `features/comment/comment-list/` | Has styles | Cards with left accent border |
-| `comment-form` | `features/comment/comment-form/` | Has styles | Textarea + char counter |
-| `dashboard` | `pages/dashboard/` | Has styles | Grid of meetup-cards, modal |
-| `meetup-detail` | `pages/meetup-detail/` | Has styles | Detail card, info grid, comments |
+| `comment-list` | `features/comment/comment-list/` | **Empty** — uses Tailwind utilities | Cards matching meetup-card pattern |
+| `comment-form` | `features/comment/comment-form/` | **Empty** — uses Tailwind utilities | Embedded textarea with focus ring |
+| `dashboard` | `pages/dashboard/` | Has styles | Grid of meetup-cards, create/edit modal, **detail modal overlay** |
+| `meetup-detail` | `pages/meetup-detail/` | Has styles | Dual-mode: full page (direct URL) or modal (from dashboard) |
 | `login` | `pages/login/` | Has styles | Centered form |
 | `signup` | `pages/signup/` | Has styles | Centered form |
 
@@ -29,8 +29,8 @@
 | Role | Agent | Status |
 |------|-------|--------|
 | **Lead** | Main conversation | Active |
-| **Styling Agent** | CSS/SCSS + Tailwind specialist | Active — Step 3 complete |
-| **Architecture Agent** | Angular template / build specialist | Active — Step 3 complete |
+| **Styling Agent** | CSS/SCSS + Tailwind specialist | Active — Step 4.5 complete |
+| **Architecture Agent** | Angular template / build specialist | Active — Step 4.5 complete |
 
 ---
 
@@ -58,12 +58,32 @@
 - Action bar separated with `border-t`, shortened button labels
 - **Agent:** Styling + Architecture
 
-### Step 4: Comment Card Overhaul
-- Restyle `comment-list` items with card-like appearance
-- User avatar placeholder (colored circle with initials)
-- Improved timestamp formatting and layout
-- Hover state for comment cards
+### Step 3.5: Dark Mode Fix & Design Polish
+- Fixed theme variable scoping: Tailwind v4 `@theme` resolves `var()` at build time, so dark-mode overrides from `styles.scss` were invisible to utility classes
+- Solution: Universal `.dark-mode` selector in `tailwind.css` with `!important` overrides + explicit `--color-*` redefinitions
+- Increased shadow-glow intensity (`0 0 20px 3px`) for dark mode
+- Pro typography: `text-xl font-bold tracking-tight` titles, `text-text-secondary/80 leading-relaxed` descriptions
+- Fixed dark-mode readability: comment author switched from `text-accent` to `text-text-primary`
+- Comment form fully migrated to Tailwind: embedded textarea with `focus-within:ring-2 focus-within:ring-accent/50`
+- Gutted dead BEM SCSS from `comment-list.scss` and `comment-form.scss`
 - **Agent:** Styling + Architecture
+
+### Step 4: Comment Card Overhaul
+- Restyle `comment-list` items with card-like appearance (same pattern as meetup cards)
+- Tailwind utility classes: `rounded-xl border border-border bg-card shadow-glow transition-all duration-300 p-4`
+- **Agent:** Styling + Architecture
+
+### Step 4.5: Detail Modal Overlay
+- Comment section constrained to `max-width: 700px` (matches `.detail-card`)
+- `MeetupDetailComponent` now dual-mode: accepts optional `[meetupId]` input for modal usage, falls back to route param for direct URL
+- `isModal` computed hides "Back to Dashboard" link when rendered in modal
+- Dashboard hosts detail modal: `showDetailModal` / `detailMeetupId` signals, Escape key handler (`@HostListener('document:keydown.escape')`)
+- Meetup card emits `viewDetails` output instead of using `routerLink` — parent decides behavior
+- `.detail-modal` CSS: fixed height `75vh`, `overflow-y: auto` (scrollbar appears as comments grow, modal doesn't resize)
+- Frosted-glass effect: `color-mix(in srgb, var(--card-bg) 92%, transparent)` + `backdrop-filter: blur(12px)` on both modals
+- Meetup card: removed horizontal divider above buttons, clean card layout with `p-6`
+- Direct URL `/meetups/:id` still works as full-page view (bookmarkable)
+- **Agent:** Architecture + Styling
 
 ### Step 5: User Avatar Placeholders
 - Create reusable avatar component (initials in colored circle)
@@ -93,7 +113,9 @@
 | 1 | Install Tailwind CSS | **Complete** | `install and configure Tailwind CSS v4 with PostCSS for Angular 20` |
 | 2 | Button system | **Complete** | `standardize button system, and cleanup redundant SCSS` |
 | 3 | Button polish & meetup card | **Complete** | `polish buttons and overhaul meetup card with activity badges` |
-| 4 | Comment card overhaul | Pending | — |
+| 3.5 | Dark mode fix & design polish | **Complete** | Theme variable scoping fix, shadow-glow, pro typography, comment Tailwind migration |
+| 4 | Comment card overhaul | **Complete** | Comment list + form fully migrated to Tailwind utilities, dead BEM SCSS gutted |
+| 4.5 | Detail modal overlay | **Complete** | `implement dual-mode meetup details with frosted-glass modal` |
 | 5 | User avatar placeholders | Pending | — |
 | 6 | Form & page polish | Pending | — |
 | 7 | Final QA & dark mode | Pending | — |
@@ -134,3 +156,5 @@ Angular reads this, loads `@tailwindcss/postcss` (which has `postcss: true` flag
 | 1 | sjtroxel | 2026-02-16 | Committed manually |
 | 2 | sjtroxel | 2026-02-16 | Committed manually; auth verified after logout/login |
 | 3 | sjtroxel | 2026-02-16 | Dark-mode contrast Option A approved; activity badge icons added |
+| 3-fix | sjtroxel | 2026-02-16 | `resolve Tailwind v4 build pipeline and define core theme variables` — .postcssrc.json fix |
+| 3.5–4.5 | sjtroxel | 2026-02-16 | `implement dual-mode meetup details with frosted-glass modal` — dark mode fix, comment overhaul, detail modal, card polish |
