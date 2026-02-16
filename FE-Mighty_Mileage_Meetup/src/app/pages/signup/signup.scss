@@ -51,23 +51,6 @@
       }
     }
 
-    button {
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      border: 2px solid var(--accent);
-      background: transparent;
-      color: var(--navbar-text);
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-
-      &:hover {
-        background: var(--accent);
-        color: var(--card-bg);
-        box-shadow: 0 0 6px var(--accent);
-      }
-    }
-
     .error {
       color: var(--error);
       font-size: 0.85rem;

@@ -93,29 +93,8 @@ p {
   min-height: calc(100vh - 70px); /* Ensure container fills remaining viewport */
 }
 
-/* -------------------------------
-   5. BUTTON STYLES
--------------------------------- */
-button {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 6px;
-  background-color: var(--button-bg);
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
-
-  &:hover {
-    background-color: var(--button-hover);
-    transform: scale(1.02);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
+/* Button styles now handled by @utility classes in tailwind.css
+   (btn-primary, btn-secondary, btn-danger) */
 
 /* -------------------------------
    6. FORM ELEMENTS

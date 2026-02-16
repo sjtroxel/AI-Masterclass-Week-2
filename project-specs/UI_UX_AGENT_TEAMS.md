@@ -29,8 +29,8 @@
 | Role | Agent | Status |
 |------|-------|--------|
 | **Lead** | Main conversation | Active |
-| **Styling Agent** | CSS/SCSS + Tailwind specialist | Active — completed Step 1 |
-| **Architecture Agent** | Angular template / build specialist | Active — completed Step 1 |
+| **Styling Agent** | CSS/SCSS + Tailwind specialist | Active — Step 2 complete |
+| **Architecture Agent** | Angular template / build specialist | Active — Step 2 complete |
 
 ---
 
@@ -89,8 +89,8 @@
 
 | Step | Description | Status | Commit Message (Proposed) |
 |------|-------------|--------|---------------------------|
-| 1 | Install Tailwind CSS | **Done** | `install and configure Tailwind CSS v4 with PostCSS for Angular 20` |
-| 2 | Button system | Pending | — |
+| 1 | Install Tailwind CSS | **Complete** | `install and configure Tailwind CSS v4 with PostCSS for Angular 20` |
+| 2 | Button system | **Done** | `standardize button system with btn-primary/secondary/danger utilities` |
 | 3 | Meetup card overhaul | Pending | — |
 | 4 | Comment card overhaul | Pending | — |
 | 5 | User avatar placeholders | Pending | — |
@@ -103,4 +103,4 @@
 
 | Step | Approved By | Date | Notes |
 |------|-------------|------|-------|
-| — | — | — | — |
+| 1 | sjtroxel | 2026-02-16 | Committed manually |

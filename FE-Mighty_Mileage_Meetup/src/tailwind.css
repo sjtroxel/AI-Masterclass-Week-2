@@ -17,3 +17,103 @@
   --color-navbar: var(--navbar-bg);
   --color-navbar-text: var(--navbar-text);
 }
+
+/* -------------------------------------------------------
+   Button System
+   Uses CSS variables so dark mode works automatically.
+   @layer utilities ensures Tailwind includes these in the
+   final output and they can be composed with other utilities.
+-------------------------------------------------------- */
+
+@layer utilities {
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    border: 2px solid transparent;
+    background-color: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .btn-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    border: 2px solid var(--accent);
+    background-color: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn-secondary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  .btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    border: 2px solid transparent;
+    background-color: var(--error);
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+
+  .btn-danger:hover {
+    background-color: color-mix(in srgb, var(--error) 85%, #000);
+  }
+
+  .btn-danger:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--error) 40%, transparent);
+  }
+
+  .btn-danger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}

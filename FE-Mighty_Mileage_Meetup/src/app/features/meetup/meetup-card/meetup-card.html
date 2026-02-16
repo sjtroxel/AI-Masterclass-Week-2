@@ -4,15 +4,15 @@
   <p><strong>Location:</strong> {{ meetup().location?.city || 'No location yet' }}</p>
   <p><strong>Date & Time:</strong> {{ meetup().start_date_time | date:'short' }}</p>
   <p><strong>Participants:</strong> {{ participantCount() }}</p>
-  <a [routerLink]="['/meetups', meetup().id]" class="view-details">View Details</a>
+  <a [routerLink]="['/meetups', meetup().id]" class="btn-secondary view-details">View Details</a>
   @if (isOwner()) {
-    <button (click)="edit.emit(meetup())">Edit</button>
-    <button (click)="delete.emit(meetup().id)">Delete</button>
+    <button class="btn-secondary" (click)="edit.emit(meetup())">Edit</button>
+    <button class="btn-danger" (click)="delete.emit(meetup().id)">Delete</button>
   } @else {
     @if (isParticipant()) {
-      <button (click)="leaveMeetup()">Leave Meetup</button>
+      <button class="btn-secondary" (click)="leaveMeetup()">Leave Meetup</button>
     } @else {
-      <button (click)="joinMeetup()">Join Meetup</button>
+      <button class="btn-primary" (click)="joinMeetup()">Join Meetup</button>
     }
   }
 

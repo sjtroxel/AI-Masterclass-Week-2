@@ -10,7 +10,7 @@
     <span class="comment-form__counter" [class.near-limit]="charCount() > 1800">
       {{ charCount() }} / 2000
     </span>
-    <button class="comment-form__submit" type="submit" [disabled]="form.invalid">
+    <button class="btn-primary" type="submit" [disabled]="form.invalid">
       Post Comment
     </button>
   </div>

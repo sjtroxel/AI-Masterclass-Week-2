@@ -19,10 +19,10 @@
 
     <!-- Auth Links -->
     @if (authService.isLoggedIn()) {
-      <button (click)="logout()">Logout</button>
+      <button class="btn-danger" (click)="logout()">Logout</button>
     } @else {
-      <a routerLink="/login">Login</a>
-      <a routerLink="/signup">Sign Up</a>
+      <a class="btn-secondary" routerLink="/login">Login</a>
+      <a class="btn-secondary" routerLink="/signup">Sign Up</a>
     }
   </div>
 </nav>

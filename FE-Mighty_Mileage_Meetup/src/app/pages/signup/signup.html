@@ -28,6 +28,6 @@
 		@for (error of errors; track $index) {
       		<p class="error">{{error}}</p>
     }
-		<button type="submit" [disabled]="!signupForm.valid">Sign Up</button>
+		<button class="btn-primary" type="submit" [disabled]="!signupForm.valid">Sign Up</button>
 	</form>
 </div>

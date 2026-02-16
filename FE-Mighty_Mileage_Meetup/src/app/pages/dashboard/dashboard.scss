@@ -6,22 +6,7 @@ h1 {
 
 .add {
   display: block;
-  margin: 0.5rem auto 2rem auto; // center horizontally
-  padding: 0.45rem 1rem;         // match navbar button size
-  border: 2px solid var(--accent);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--navbar-text);
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    background: var(--accent);
-    color: var(--card-bg);
-    box-shadow: 0 0 6px var(--accent);
-  }
+  margin: 0.5rem auto 2rem auto;
 }
 
 .meetup-list {
@@ -44,25 +29,6 @@ h1 {
 
     h3 {
       color: var(--primary);
-    }
-
-    button {
-      margin-top: 0.5rem;
-      padding: 0.45rem 1rem; // match navbar buttons
-      border: 2px solid var(--accent);
-      border-radius: 6px;
-      background: transparent;
-      color: var(--navbar-text);
-      font-size: 0.95rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-
-      &:hover {
-        background: var(--accent);
-        color: var(--card-bg);
-        box-shadow: 0 0 6px var(--accent);
-      }
     }
   }
 }
