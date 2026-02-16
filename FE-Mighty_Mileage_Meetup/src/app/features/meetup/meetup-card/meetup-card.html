@@ -1,19 +1,43 @@
-<div class="meetup-card">
-  <h3>{{ meetup().title }}</h3>
-  <p><strong>Activity:</strong> {{ meetup().activity }}</p>
-  <p><strong>Location:</strong> {{ meetup().location?.city || 'No location yet' }}</p>
-  <p><strong>Date & Time:</strong> {{ meetup().start_date_time | date:'short' }}</p>
-  <p><strong>Participants:</strong> {{ participantCount() }}</p>
-  <a [routerLink]="['/meetups', meetup().id]" class="btn-secondary view-details">View Details</a>
-  @if (isOwner()) {
-    <button class="btn-secondary" (click)="edit.emit(meetup())">Edit</button>
-    <button class="btn-danger" (click)="delete.emit(meetup().id)">Delete</button>
-  } @else {
-    @if (isParticipant()) {
-      <button class="btn-secondary" (click)="leaveMeetup()">Leave Meetup</button>
-    } @else {
-      <button class="btn-primary" (click)="joinMeetup()">Join Meetup</button>
-    }
-  }
+<div class="rounded-xl border border-border bg-card shadow-md hover:shadow-lg transition-shadow p-5">
+  <!-- Header: Title + Activity Badge -->
+  <div class="flex items-start justify-between mb-3">
+    <h3 class="text-lg font-bold text-text-primary m-0">{{ meetup().title }}</h3>
+    <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold
+                 bg-accent/15 text-accent">
+      @switch (meetup().activity) {
+        @case ('run') { 🏃 }
+        @case ('bicycle') { 🚲 }
+        @default { 📍 }
+      }
+      {{ meetup().activity }}
+    </span>
+  </div>
 
+  <!-- Info rows -->
+  <div class="space-y-1.5 text-sm text-text-secondary mb-4">
+    <p class="flex items-center gap-2 m-0">
+      📍 {{ meetup().location?.city || 'No location yet' }}
+    </p>
+    <p class="flex items-center gap-2 m-0">
+      📅 {{ meetup().start_date_time | date:'medium' }}
+    </p>
+    <p class="flex items-center gap-2 m-0">
+      👥 {{ participantCount() }} participant{{ participantCount() === 1 ? '' : 's' }}
+    </p>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex items-center gap-2 pt-3 border-t border-border">
+    <a [routerLink]="['/meetups', meetup().id]" class="btn-secondary">View Details</a>
+    @if (isOwner()) {
+      <button class="btn-secondary" (click)="edit.emit(meetup())">Edit</button>
+      <button class="btn-danger" (click)="delete.emit(meetup().id)">Delete</button>
+    } @else {
+      @if (isParticipant()) {
+        <button class="btn-secondary" (click)="leaveMeetup()">Leave</button>
+      } @else {
+        <button class="btn-primary" (click)="joinMeetup()">Join</button>
+      }
+    }
+  </div>
 </div>

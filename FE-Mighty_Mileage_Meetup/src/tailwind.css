@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Explicitly tell Tailwind v4 to scan our Angular templates and
+   TypeScript files for utility classes. Auto-detection doesn't
+   reliably pick up component templates in Angular's build pipeline. */
+@source "./app";
+
 /* Bridge existing CSS variables into Tailwind's theme system.
    This lets us use utilities like bg-card, text-primary, border-border, etc.
    while keeping dark mode driven by our body.dark-mode class + CSS variables. */
@@ -21,99 +26,112 @@
 /* -------------------------------------------------------
    Button System
    Uses CSS variables so dark mode works automatically.
-   @layer utilities ensures Tailwind includes these in the
-   final output and they can be composed with other utilities.
+   Placed OUTSIDE any @layer so these always beat Tailwind's
+   preflight reset (which sets button { background: transparent;
+   color: inherit; border-radius: 0 } in @layer base).
+   Unlayered CSS always wins over layered CSS in the cascade.
 -------------------------------------------------------- */
 
-@layer utilities {
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    border-radius: 8px;
-    padding: 0.5rem 1.25rem;
-    border: 2px solid transparent;
-    background-color: var(--accent);
-    color: #fff;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-  }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  border: 2px solid transparent;
+  background-color: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
 
-  .btn-primary:hover {
-    background-color: var(--accent-hover);
-  }
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+}
 
-  .btn-primary:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
-  }
+.btn-primary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
+}
 
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
-  .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    border-radius: 8px;
-    padding: 0.5rem 1.25rem;
-    border: 2px solid var(--accent);
-    background-color: transparent;
-    color: var(--accent);
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-  }
+/* Dark mode: dark text on bright accent for high contrast */
+body.dark-mode .btn-primary {
+  color: var(--background);
+}
 
-  .btn-secondary:hover {
-    background-color: var(--accent);
-    color: #fff;
-  }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  border: 2px solid var(--accent);
+  background-color: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
 
-  .btn-secondary:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
-  }
+.btn-secondary:hover {
+  background-color: var(--accent);
+  color: #fff;
+}
 
-  .btn-secondary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
+.btn-secondary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
+}
 
-  .btn-danger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    border-radius: 8px;
-    padding: 0.5rem 1.25rem;
-    border: 2px solid transparent;
-    background-color: var(--error);
-    color: #fff;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-  }
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
-  .btn-danger:hover {
-    background-color: color-mix(in srgb, var(--error) 85%, #000);
-  }
+/* Dark mode: dark text when secondary fills on hover */
+body.dark-mode .btn-secondary:hover {
+  color: var(--background);
+}
 
-  .btn-danger:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--error) 40%, transparent);
-  }
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  border: 2px solid transparent;
+  background-color: var(--error);
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
 
-  .btn-danger:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
+.btn-danger:hover {
+  background-color: color-mix(in srgb, var(--error) 85%, #000);
+}
+
+.btn-danger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--error) 40%, transparent);
+}
+
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
