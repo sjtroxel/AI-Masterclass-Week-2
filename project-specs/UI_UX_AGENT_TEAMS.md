@@ -29,8 +29,8 @@
 | Role | Agent | Status |
 |------|-------|--------|
 | **Lead** | Main conversation | Active |
-| **Styling Agent** | CSS/SCSS specialist | Pending |
-| **Architecture Agent** | Angular template specialist | Pending |
+| **Styling Agent** | CSS/SCSS + Tailwind specialist | Active — completed Step 1 |
+| **Architecture Agent** | Angular template / build specialist | Active — completed Step 1 |
 
 ---
 
@@ -89,7 +89,7 @@
 
 | Step | Description | Status | Commit Message (Proposed) |
 |------|-------------|--------|---------------------------|
-| 1 | Install Tailwind CSS | Pending | — |
+| 1 | Install Tailwind CSS | **Done** | `install and configure Tailwind CSS v4 with PostCSS for Angular 20` |
 | 2 | Button system | Pending | — |
 | 3 | Meetup card overhaul | Pending | — |
 | 4 | Comment card overhaul | Pending | — |

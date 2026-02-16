@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+/* Bridge existing CSS variables into Tailwind's theme system.
+   This lets us use utilities like bg-card, text-primary, border-border, etc.
+   while keeping dark mode driven by our body.dark-mode class + CSS variables. */
+@theme {
+  --color-background: var(--background);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-error: var(--error);
+  --color-card: var(--card-bg);
+  --color-border: var(--border);
+  --color-button: var(--button-bg);
+  --color-button-hover: var(--button-hover);
+  --color-navbar: var(--navbar-bg);
+  --color-navbar-text: var(--navbar-text);
+}
