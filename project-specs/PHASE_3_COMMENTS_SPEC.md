@@ -73,7 +73,7 @@ the comment list from the inline data without a redundant HTTP call.
 
 ---
 
-## Step 2: CommentFormComponent 🔄 in progress
+## Step 2: CommentFormComponent ✅ complete
 
 **`features/comment/comment-form/`**
 
@@ -99,7 +99,7 @@ the comment list from the inline data without a redundant HTTP call.
 
 ---
 
-## Step 3: Update MeetupDetailComponent 🔄 in progress
+## Step 3: Update MeetupDetailComponent ✅ complete
 
 **`pages/meetup-detail/meetup-detail.ts`** + `.html`
 
@@ -150,6 +150,35 @@ On initial load, auto-scroll places the newest comment at the bottom of the view
 
 ---
 
+## Backend Auth Fix ✅ complete
+
+### What was temporary
+During UI development, `CommentsController#create` had two bypasses to allow testing without a logged-in user:
+- `skip_before_action :authenticate_request, only: [:create]` — skipped JWT verification on POST
+- `user: User.first` — hardcoded the comment author to the first DB user
+
+Both lines have been removed. The controller now enforces full JWT auth on all actions.
+
+### How JWT reaches the backend
+The Angular app registers `authTokenInterceptor` globally via `provideHttpClient(withInterceptors([authTokenInterceptor]))` in `app.config.ts`. This interceptor clones every outgoing `HttpClient` request and attaches `Authorization: Bearer <token>` from `localStorage` — no manual header code is needed in individual services. Both `MeetupService` and `CommentService` rely on this automatically.
+
+### Current `CommentsController` (production-ready)
+```ruby
+class CommentsController < ApplicationController
+  before_action :authenticate_request   # decodes JWT → @current_user
+  before_action :set_commentable
+
+  def create
+    comment = @commentable.comments.build(
+      comment_params.merge(user: @current_user, meetup_id: @commentable.id)
+    )
+    ...
+  end
+end
+```
+
+---
+
 ## Key Patterns
 
 | Pattern | Detail |
@@ -169,4 +198,6 @@ On initial load, auto-scroll places the newest comment at the bottom of the view
 3. Navigate away and back → comment list is fresh (no stale data from previous visit)
 4. Typing near 1800 chars → counter turns accent-colored as a warning
 5. At 2001+ chars → submit button disabled (backend also enforces 2000-char max)
-6. Run `npm test` in `FE-Mighty_Mileage_Meetup/` to confirm no spec breakage
+6. Log in as a specific user (e.g. Strawberry123), post a comment, and verify the saved `user_id` matches that user in the DB — not User.first
+7. Attempt POST to `/meetups/:id/comments` without a token → expect `401 Unauthorized`
+8. Run `npm test` in `FE-Mighty_Mileage_Meetup/` to confirm no spec breakage

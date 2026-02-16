@@ -1,7 +1,6 @@
 class CommentsController < ApplicationController
   before_action :authenticate_request
   before_action :set_commentable
-  skip_before_action :authenticate_request, only: [:create] # TEMP: remove before shipping
 
   def index
   page = params[:page].present? ? params[:page].to_i : 1
@@ -14,7 +13,7 @@ class CommentsController < ApplicationController
   end
 
   def create
-    comment = @commentable.comments.build(comment_params.merge(user: User.first, meetup_id: @commentable.id)) # TEMP: hardcoded user
+    comment = @commentable.comments.build(comment_params.merge(user: @current_user, meetup_id: @commentable.id))
     if comment.save
       render json: CommentBlueprint.render_as_hash(comment), status: :created
     else
