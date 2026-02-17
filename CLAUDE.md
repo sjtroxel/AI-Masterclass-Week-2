@@ -19,6 +19,11 @@ npm run build              # production build
 npm run watch              # dev build in watch mode
 ```
 
+### Frontend Build Rules (CRITICAL)
+- **PostCSS:** Never use `postcss.config.js`. Angular's builder only respects `.postcssrc.json`.
+- **Tailwind v4:** All utility classes are generated via `@tailwindcss/postcss` through the `.postcssrc.json` bridge.
+- **Troubleshooting:** If styles aren't appearing, verify `.postcssrc.json` exists and run `npm run build`.
+
 ### Backend (Rails)
 
 ```sh
@@ -70,6 +75,7 @@ bin/rails test test/models/user_test.rb -n test_some_method
 ## Git
 
 - **Never** add a `Co-Authored-By` line to commit messages. All commits must show as authored by sjtroxel only.
+- **Commit Pattern** - use descriptive lowercase messages (e.g. padding on meetup cards).
 
 ## Style Guidelines
 

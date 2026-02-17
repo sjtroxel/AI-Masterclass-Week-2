@@ -56,3 +56,15 @@ paths: ["FE-Mighty_Mileage_Meetup/**"]
 
 - **Prettier** handles formatting. Do not add manual formatting rules that conflict.
 - HTML templates use the `angular` Prettier parser.
+
+## Styling & Tailwind v4
+
+- **Tailwind v4 Utilities:** Use Tailwind for layout (flex, grid), colors, and typography.
+- **The Padding Rule (Nuclear Reset):** NEVER use Tailwind `p-` classes for the outermost container of a component (where the border/background is). 
+- **Internal Gutter Pattern:** 1. Add an `.inner-container` class to the main `div` or `form` in the HTML template.
+  2. In the component's `.scss` file, apply internal padding:
+     ```scss
+     .inner-container { padding: 1.5rem !important; } // 2rem for forms
+     ```
+- **Component Host:** Set `:host { display: block; }` in every component SCSS to ensure proper layout.
+- **Buttons:** Use the global button classes (`btn-primary`, `btn-secondary`, `btn-danger`). Do not reinvent button styles with utility classes.
