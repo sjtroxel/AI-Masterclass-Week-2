@@ -1,17 +1,64 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
-
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { authGuard } from './auth-guard';
 
 describe('authGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => authGuard(...guardParameters));
+  let router: Router;
+
+  const executeGuard: CanActivateFn = (route, state) =>
+    TestBed.runInInjectionContext(() => authGuard(route, state));
+
+  const mockRoute = {} as ActivatedRouteSnapshot;
+  const mockState = { url: '/dashboard' } as RouterStateSnapshot;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+      ],
+    });
+
+    router = TestBed.inject(Router);
+    localStorage.clear();
   });
 
-  it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('returns true when user is logged in', () => {
+    localStorage.setItem('token', 'valid-token');
+
+    const result = executeGuard(mockRoute, mockState);
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false when user is not logged in', () => {
+    const result = executeGuard(mockRoute, mockState);
+
+    expect(result).toBe(false);
+  });
+
+  it('navigates to /login when user is not logged in', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
+    executeGuard(mockRoute, mockState);
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('does not navigate when user is logged in', () => {
+    localStorage.setItem('token', 'valid-token');
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
+    executeGuard(mockRoute, mockState);
+
+    expect(navigateSpy).not.toHaveBeenCalled();
   });
 });
