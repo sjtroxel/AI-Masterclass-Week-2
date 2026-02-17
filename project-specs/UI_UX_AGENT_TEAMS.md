@@ -13,7 +13,7 @@
 | Component | Template | SCSS | Notes |
 |-----------|----------|------|-------|
 | `navbar` | `shared/components/navbar/` | Has styles | Fixed top, theme toggle, auth links |
-| `meetup-card` | `features/meetup/meetup-card/` | **Empty** — uses Tailwind utilities | Card layout, activity badge, `viewDetails` output event |
+| `meetup-card` | `features/meetup/meetup-card/` | Has styles | Card layout, activity badge, `viewDetails` output event, `.inner-container` padding, `.card-actions` compact buttons |
 | `meetup-form` | `features/meetup/meetup-form/` | Has styles | 3-section layout, radio buttons |
 | `comment-list` | `features/comment/comment-list/` | **Empty** — uses Tailwind utilities | Cards matching meetup-card pattern |
 | `comment-form` | `features/comment/comment-form/` | **Empty** — uses Tailwind utilities | Embedded textarea with focus ring |
@@ -85,6 +85,16 @@
 - Direct URL `/meetups/:id` still works as full-page view (bookmarkable)
 - **Agent:** Architecture + Styling
 
+### Step 7.5: Container Padding Nuclear Reset & Card Button Fix
+- **Problem:** Tailwind utility classes (`p-6`, `p-8`) for outermost container padding were being ignored due to CSS Cascade Layers — Angular view encapsulation + Tailwind's `@layer utilities` meant unlayered component SCSS always won
+- **Attempt 1 (failed):** Applied `padding` to `:host` in each component SCSS — padding rendered *outside* the visible border/background, creating a gap between the host element edge and the card border rather than an internal gutter
+- **Attempt 2 (success):** Added `.inner-container` class to the actual `<div>`/`<form>` that carries `border` and `bg-card` classes, applied `padding: 1.5rem !important` (cards/detail) or `2rem !important` (forms) via component SCSS — padding now renders *inside* the border
+- **Affected files:** `meetup-card`, `login`, `signup`, `meetup-form`, `meetup-detail` (HTML + SCSS), `dashboard.scss` (`.modal` and `.detail-modal`)
+- **Dashboard modals:** `.modal` and `.detail-modal` updated to `display: flex; flex-direction: column; padding: 2rem !important`
+- **Global `box-sizing: border-box`** already present in `styles.scss` — no change needed
+- **Card button fix:** Shortened "View Details" to "Details", added `.card-actions` class with `font-size: 0.75rem`, `padding: 0.3rem 0.65rem`, `flex-wrap: nowrap`, `justify-content: center` — all buttons fit on one centered line regardless of card width
+- **Agent:** Styling + Architecture
+
 ### Step 5: User Avatar Placeholders
 - Create reusable avatar component (initials in colored circle)
 - Integrate into: navbar (current user), comment list, meetup detail (organizer)
@@ -92,17 +102,19 @@
 - **Agent:** Architecture (new component) + Styling
 
 ### Step 6: Form & Page Polish
-- Unify login/signup form styling
-- Polish meetup-form sections
-- Improve meetup-detail layout and info grid
-- Dashboard grid spacing and empty states
-- **Agent:** Styling
+- Login/signup forms: full Tailwind migration — `bg-card`, `rounded-xl`, `shadow-glow`, `tracking-tight` headers, `focus:ring-2 focus:ring-accent/50` inputs
+- Signup: first/last name in responsive 2-col grid (`grid-cols-1 sm:grid-cols-2`)
+- Meetup-form: section headings upgraded to `text-sm font-bold tracking-tight uppercase`, inputs get `rounded-lg bg-background` with focus ring, layout SCSS preserved for flex rows
+- Meetup-detail: info grid redesigned as dashboard — each stat in its own mini-card (`rounded-lg bg-background border border-border p-3`) with emoji-prefixed uppercase labels; capacity now shows "X / Y guests"; location gets its own full-width card
+- Dead BEM SCSS gutted from login.scss, signup.scss, meetup-detail.scss; meetup-form.scss reduced to layout-only rules
+- **Agent:** Styling + Architecture
 
 ### Step 7: Final QA & Dark Mode Verification
-- Verify all changes work in both light and dark themes
-- Check responsive behavior at mobile breakpoints
-- Ensure no regressions in functionality
-- **Agent:** Lead (manual review)
+- **Esc key:** Verified `@HostListener('document:keydown.escape')` in dashboard.ts correctly closes detail modal first, then form modal (priority order)
+- **Mobile responsiveness:** Fixed `grid-cols-2` → `grid-cols-1 sm:grid-cols-2` in meetup-detail info grid and signup name fields; meetup-form already had `@media (max-width: 600px)` breakpoints; login/signup `max-w-md` safe under 600px; modals use `vw`-based widths with `overflow-y: auto`
+- **Stale color sweep:** Fixed 6× `var(--text)` → `var(--text-primary)`, 1× `var(--primary)` → `var(--text-primary)`, 3× `var(--card-shadow)` → inline shadow value in dashboard.scss. No hard-coded hex colors found outside theme definitions
+- **Build:** `ng build --configuration production` passes cleanly
+- **Agent:** Lead + Styling
 
 ---
 
@@ -116,9 +128,10 @@
 | 3.5 | Dark mode fix & design polish | **Complete** | Theme variable scoping fix, shadow-glow, pro typography, comment Tailwind migration |
 | 4 | Comment card overhaul | **Complete** | Comment list + form fully migrated to Tailwind utilities, dead BEM SCSS gutted |
 | 4.5 | Detail modal overlay | **Complete** | `implement dual-mode meetup details with frosted-glass modal` |
-| 5 | User avatar placeholders | Pending | — |
-| 6 | Form & page polish | Pending | — |
-| 7 | Final QA & dark mode | Pending | — |
+| 5 | User avatar placeholders | **Skipped** | — |
+| 6 | Form & page polish | **Complete** | Executive card aesthetic on all forms, dashboard info grid, dead SCSS gutted |
+| 7 | Final QA & dark mode | **Complete** | Esc key verified, mobile grids fixed, stale colors purged, build clean |
+| 7.5 | Container padding nuclear reset & card buttons | **Complete** | `.inner-container` padding inside borders, compact centered card buttons |
 
 ---
 
@@ -158,3 +171,4 @@ Angular reads this, loads `@tailwindcss/postcss` (which has `postcss: true` flag
 | 3 | sjtroxel | 2026-02-16 | Dark-mode contrast Option A approved; activity badge icons added |
 | 3-fix | sjtroxel | 2026-02-16 | `resolve Tailwind v4 build pipeline and define core theme variables` — .postcssrc.json fix |
 | 3.5–4.5 | sjtroxel | 2026-02-16 | `implement dual-mode meetup details with frosted-glass modal` — dark mode fix, comment overhaul, detail modal, card polish |
+| 7.5 | sjtroxel | 2026-02-17 | `migrating brownfield proj. to TailwindV4 is a nightmare` — nuclear reset: .inner-container padding, compact card buttons |

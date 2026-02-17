@@ -1,4 +1,4 @@
-<div class="rounded-xl border border-border bg-card shadow-glow transition-all duration-300 p-6">
+<div class="inner-container rounded-xl border border-border bg-card shadow-glow transition-all duration-300">
   <!-- Header: Title + Activity Badge -->
   <div class="flex items-start justify-between gap-3 mb-3">
     <h3 class="text-xl font-bold tracking-tight text-text-primary m-0">{{ meetup().title }}</h3>
@@ -27,8 +27,8 @@
   </div>
 
   <!-- Actions -->
-  <div class="flex items-center gap-2 pt-2">
-    <button class="btn-secondary" (click)="viewDetails.emit(meetup().id)">View Details</button>
+  <div class="card-actions">
+    <button class="btn-secondary" (click)="viewDetails.emit(meetup().id)">Details</button>
     @if (isOwner()) {
       <button class="btn-secondary" (click)="edit.emit(meetup())">Edit</button>
       <button class="btn-danger" (click)="delete.emit(meetup().id)">Delete</button>

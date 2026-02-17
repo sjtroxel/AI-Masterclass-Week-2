@@ -1,7 +1,7 @@
 h1 {
   text-align: center;
-  color: var(--text);
-  margin-bottom: 1rem; // slightly less vertical spacing
+  color: var(--text-primary);
+  margin-bottom: 1rem;
 }
 
 .add {
@@ -19,8 +19,8 @@ h1 {
     background: var(--card-bg);
     padding: 1rem;
     border-radius: 10px;
-    box-shadow: var(--card-shadow);
-    color: var(--text);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    color: var(--text-primary);
     transition: transform 0.2s ease;
 
     &:hover {
@@ -28,7 +28,7 @@ h1 {
     }
 
     h3 {
-      color: var(--primary);
+      color: var(--text-primary);
     }
   }
 }
@@ -49,13 +49,15 @@ h1 {
   transform: translate(-50%, -50%);
   background: color-mix(in srgb, var(--card-bg) 92%, transparent);
   backdrop-filter: blur(12px);
-  color: var(--text);
-  padding: 1rem 1rem 0.75rem;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem !important;
   border-radius: 12px;
   width: 80vw;
   max-width: 700px;
   z-index: 1000;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.3s ease;
 
   h2 {
@@ -71,7 +73,7 @@ h1 {
     border: none;
     font-size: 1.4rem;
     font-weight: bold;
-    color: var(--text);
+    color: var(--text-primary);
     cursor: pointer;
 
     &:hover {
@@ -102,15 +104,17 @@ h1 {
   transform: translate(-50%, -50%);
   background: color-mix(in srgb, var(--card-bg) 92%, transparent);
   backdrop-filter: blur(12px);
-  color: var(--text);
-  padding: 1rem 1.5rem 0.75rem;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem !important;
   border-radius: 12px;
   width: 90vw;
   max-width: 700px;
   height: 75vh;
   overflow-y: auto;
   z-index: 1000;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.3s ease;
 
   h1 {
@@ -125,7 +129,7 @@ h1 {
     border: none;
     font-size: 1.4rem;
     font-weight: bold;
-    color: var(--text);
+    color: var(--text-primary);
     cursor: pointer;
 
     &:hover {

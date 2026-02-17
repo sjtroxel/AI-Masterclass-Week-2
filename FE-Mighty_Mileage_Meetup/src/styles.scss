@@ -96,57 +96,11 @@ p {
 /* Button styles now handled by @utility classes in tailwind.css
    (btn-primary, btn-secondary, btn-danger) */
 
-/* -------------------------------
-   6. FORM ELEMENTS
--------------------------------- */
-input, select {
-  width: 100%;
-  padding: 0.6rem;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 1rem;
-  margin-bottom: 0.8rem;
-  background-color: var(--card-bg);
-  color: var(--text-primary);
-
-  &:focus {
-    outline: 2px solid var(--accent);
-  }
-}
-
-label {
-  font-weight: 500;
-  margin-bottom: 0.4rem;
-  display: inline-block;
-}
+/* Form & card styles now handled by Tailwind utility classes in templates.
+   Global input/label/card rules removed to avoid overriding Tailwind's
+   @layer utilities (unlayered CSS always wins over layered CSS). */
 
 .error {
   color: var(--error);
   font-size: 0.85rem;
-}
-
-/* -------------------------------
-   7. CARD STYLES
--------------------------------- */
-.meetup-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  transition: background 0.3s ease, color 0.3s ease;
-
-  h3 {
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    color: var(--text-secondary);
-  }
-
-  button {
-    margin-right: 0.5rem;
-  }
 }

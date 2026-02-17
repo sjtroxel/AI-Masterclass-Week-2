@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.inner-container {
+  padding: 1.5rem !important;
+  width: 100%;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  flex-wrap: nowrap;
+
+  button {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.65rem;
+    white-space: nowrap;
+  }
+}
