@@ -4,6 +4,11 @@
       "command": "node",
       "args": ["mcp-route-scout/index.js"],
       "cwd": "/home/sjtroxel/ai-class-week-2"
+    },
+    "theme-scout": {
+      "command": "node",
+      "args": ["mcp-theme-scout/index.js"],
+      "cwd": "/home/sjtroxel/ai-class-week-2"
     }
   }
 }
