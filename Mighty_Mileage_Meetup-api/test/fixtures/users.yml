@@ -1,15 +1,14 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
+# Valid bcrypt hash for "password1" (meets the >=6 chars + letter + number rule)
 one:
-  first_name: MyString
-  last_name: MyString
-  email: MyString
-  username: MyString
-  password_digest: MyString
+  first_name: Alice
+  last_name: Runner
+  email: alice@example.com
+  username: alice_runner
+  password_digest: "$2a$12$OIKZ.i.hXu53M9Quug9Z8uCcM5m9sBuuIO9wO0ua9NKCTWREhTdXG"
 
 two:
-  first_name: MyString
-  last_name: MyString
-  email: MyString
-  username: MyString
-  password_digest: MyString
+  first_name: Bob
+  last_name: Cyclist
+  email: bob@example.com
+  username: bob_cyclist
+  password_digest: "$2a$12$OIKZ.i.hXu53M9Quug9Z8uCcM5m9sBuuIO9wO0ua9NKCTWREhTdXG"

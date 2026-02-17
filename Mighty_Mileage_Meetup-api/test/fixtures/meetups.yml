@@ -1,17 +1,15 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   user: one
-  activity: MyString
-  content: MyText
-  start_date_time: 2025-08-25 12:56:11
-  end_date_time: 2025-08-25 12:56:11
-  guests: 1
+  title: Morning Run Club
+  activity: run
+  start_date_time: <%= 3.days.from_now.iso8601 %>
+  end_date_time: <%= (3.days.from_now + 2.hours).iso8601 %>
+  guests: 5
 
 two:
   user: two
-  activity: MyString
-  content: MyText
-  start_date_time: 2025-08-25 12:56:11
-  end_date_time: 2025-08-25 12:56:11
-  guests: 1
+  title: Weekend Bicycle Tour
+  activity: bicycle
+  start_date_time: <%= 5.days.from_now.iso8601 %>
+  end_date_time: <%= (5.days.from_now + 3.hours).iso8601 %>
+  guests: 10

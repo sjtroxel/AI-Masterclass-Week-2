@@ -1,19 +1,15 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+user_one_location:
+  locationable: one (User)
+  address: 123 Main St
+  city: Springfield
+  state: IL
+  zip_code: "62701"
+  country: US
 
-one:
-  locationable: one
-  locationable_type: Locationable
-  zip_code: MyString
-  city: MyString
-  state: MyString
-  country: MyString
-  address: MyString
-
-two:
-  locationable: two
-  locationable_type: Locationable
-  zip_code: MyString
-  city: MyString
-  state: MyString
-  country: MyString
-  address: MyString
+meetup_one_location:
+  locationable: one (Meetup)
+  address: 456 Park Ave
+  city: Portland
+  state: OR
+  zip_code: "97201"
+  country: US

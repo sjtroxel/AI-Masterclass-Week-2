@@ -1,11 +1,11 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   user: one
-  meetup: one
-  content: MyText
+  meetup_id: <%= ActiveRecord::FixtureSet.identify(:one) %>
+  content: Looking forward to this meetup!
+  commentable: one (Meetup)
 
 two:
   user: two
-  meetup: two
-  content: MyText
+  meetup_id: <%= ActiveRecord::FixtureSet.identify(:one) %>
+  content: Count me in, should be fun.
+  commentable: one (Meetup)
