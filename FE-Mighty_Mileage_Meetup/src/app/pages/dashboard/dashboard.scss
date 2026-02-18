@@ -137,3 +137,20 @@ h1 {
     }
   }
 }
+
+@media (max-width: 640px) {
+  .modal {
+    width: 95vw;
+    padding: 1.25rem !important;
+  }
+
+  .detail-modal {
+    width: 98vw;
+    height: 85vh;
+    padding: 1.25rem !important;
+  }
+
+  .meetup-list {
+    padding: 0 0.75rem;
+  }
+}

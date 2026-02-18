@@ -21,3 +21,9 @@
     white-space: nowrap;
   }
 }
+
+@media (max-width: 400px) {
+  .card-actions {
+    flex-wrap: wrap;
+  }
+}

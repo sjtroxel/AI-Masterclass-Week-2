@@ -63,6 +63,6 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteMeetup(id: number) {
-    this.meetupService.deleteMeetup(id);
+    this.meetupService.deleteMeetup(id).subscribe();
   }
 }

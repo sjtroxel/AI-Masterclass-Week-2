@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { DashboardComponent } from './dashboard';
 import { MeetupService } from '../../core/services/meetup';
 import { AuthenticationService } from '../../core/services/authentication';
@@ -60,7 +61,7 @@ describe('DashboardComponent', () => {
       loading: signal(false),
       meetupDetail: signal(null),
       loadMeetups: vi.fn(),
-      deleteMeetup: vi.fn(),
+      deleteMeetup: vi.fn().mockReturnValue(of(null)),
       setMeetupToEdit: vi.fn(),
       clearMeetupToEdit: vi.fn(),
       addMeetup: vi.fn(),

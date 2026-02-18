@@ -163,7 +163,7 @@ describe('MeetupService', () => {
 
   describe('addMeetup()', () => {
     it('POSTs to /meetups with nested payload including location_attributes', () => {
-      service.addMeetup(mockMeetup);
+      service.addMeetup(mockMeetup).subscribe();
 
       const req = httpMock.expectOne(API);
       expect(req.request.method).toBe('POST');
@@ -174,7 +174,7 @@ describe('MeetupService', () => {
     });
 
     it('appends the created meetup to the meetups signal', () => {
-      service.addMeetup(mockMeetup);
+      service.addMeetup(mockMeetup).subscribe();
 
       const req = httpMock.expectOne(API);
       req.flush(mockMeetup);
@@ -192,7 +192,7 @@ describe('MeetupService', () => {
       httpMock.expectOne(API).flush({ meetups: JSON.stringify([mockMeetup]) });
 
       const updated = { ...mockMeetup, title: 'Afternoon Ride' };
-      service.updateMeetup(updated);
+      service.updateMeetup(updated).subscribe();
 
       const req = httpMock.expectOne(`${API}/1`);
       expect(req.request.method).toBe('PUT');
@@ -205,7 +205,7 @@ describe('MeetupService', () => {
       httpMock.expectOne(API).flush({ meetups: JSON.stringify([mockMeetup]) });
 
       const updated = { ...mockMeetup, title: 'Afternoon Ride' };
-      service.updateMeetup(updated);
+      service.updateMeetup(updated).subscribe();
       httpMock.expectOne(`${API}/1`).flush(updated);
 
       expect(service.meetups()[0].title).toBe('Afternoon Ride');
@@ -219,7 +219,7 @@ describe('MeetupService', () => {
       service.loadMeetups();
       httpMock.expectOne(API).flush({ meetups: JSON.stringify([mockMeetup, mockMeetup2]) });
 
-      service.deleteMeetup(1);
+      service.deleteMeetup(1).subscribe();
 
       const req = httpMock.expectOne(`${API}/1`);
       expect(req.request.method).toBe('DELETE');
@@ -230,7 +230,7 @@ describe('MeetupService', () => {
       service.loadMeetups();
       httpMock.expectOne(API).flush({ meetups: JSON.stringify([mockMeetup, mockMeetup2]) });
 
-      service.deleteMeetup(1);
+      service.deleteMeetup(1).subscribe();
       httpMock.expectOne(`${API}/1`).flush(null);
 
       expect(service.meetups().length).toBe(1);
@@ -252,7 +252,7 @@ describe('MeetupService', () => {
       service.loadMeetups();
       httpMock.expectOne(API).flush({ meetups: JSON.stringify([mockMeetup]) });
 
-      service.joinMeetup(1);
+      service.joinMeetup(1).subscribe();
 
       const req = httpMock.expectOne(`${API}/1/join`);
       expect(req.request.method).toBe('POST');
@@ -263,7 +263,7 @@ describe('MeetupService', () => {
       service.loadMeetups();
       httpMock.expectOne(API).flush({ meetups: JSON.stringify([mockMeetup]) });
 
-      service.joinMeetup(1);
+      service.joinMeetup(1).subscribe();
       httpMock.expectOne(`${API}/1/join`).flush(mockParticipant);
 
       const participants = service.meetups()[0].meetup_participants!;
@@ -283,7 +283,7 @@ describe('MeetupService', () => {
       service.loadMeetups();
       httpMock.expectOne(API).flush({ meetups: JSON.stringify([meetupWithParticipant]) });
 
-      service.leaveMeetup(1, 2);
+      service.leaveMeetup(1, 2).subscribe();
 
       const req = httpMock.expectOne(`${API}/1/leave`);
       expect(req.request.method).toBe('DELETE');
@@ -298,7 +298,7 @@ describe('MeetupService', () => {
       service.loadMeetups();
       httpMock.expectOne(API).flush({ meetups: JSON.stringify([meetupWithParticipant]) });
 
-      service.leaveMeetup(1, 2);
+      service.leaveMeetup(1, 2).subscribe();
       httpMock.expectOne(`${API}/1/leave`).flush(null);
 
       expect(service.meetups()[0].meetup_participants!.length).toBe(0);

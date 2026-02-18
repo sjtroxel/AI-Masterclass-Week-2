@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
+import { of } from 'rxjs';
 import { MeetupFormComponent } from './meetup-form';
 import { MeetupService } from '../../../core/services/meetup';
 import { Meetup } from '../../../shared/models/meetup';
@@ -20,8 +21,8 @@ describe('MeetupFormComponent', () => {
   beforeEach(() => {
     meetupServiceMock = {
       meetupToEdit: signal<Meetup | null>(null),
-      addMeetup: vi.fn(),
-      updateMeetup: vi.fn(),
+      addMeetup: vi.fn().mockReturnValue(of(null)),
+      updateMeetup: vi.fn().mockReturnValue(of(null)),
       clearMeetupToEdit: vi.fn(),
     };
 

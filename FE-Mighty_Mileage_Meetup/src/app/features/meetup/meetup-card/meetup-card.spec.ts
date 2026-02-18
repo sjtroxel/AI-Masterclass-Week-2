@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { MeetupCardComponent } from './meetup-card';
 import { MeetupService } from '../../../core/services/meetup';
 import { Meetup } from '../../../shared/models/meetup';
@@ -33,8 +34,8 @@ describe('MeetupCardComponent', () => {
 
   beforeEach(() => {
     meetupServiceMock = {
-      joinMeetup: vi.fn(),
-      leaveMeetup: vi.fn(),
+      joinMeetup: vi.fn().mockReturnValue(of(null)),
+      leaveMeetup: vi.fn().mockReturnValue(of(null)),
     };
 
     TestBed.configureTestingModule({

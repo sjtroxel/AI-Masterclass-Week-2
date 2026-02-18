@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthenticationService } from '../../core/services/authentication';
 
 @Component({
@@ -11,8 +12,9 @@ import { AuthenticationService } from '../../core/services/authentication';
   styleUrl: './signup.scss'
 })
 export class SignupComponent {
- signupForm: FormGroup;
+  signupForm: FormGroup;
   errors: string[] = [];
+  submitting = signal(false);
 
   constructor(
     private fb: FormBuilder,
@@ -32,11 +34,13 @@ export class SignupComponent {
   signup() {
     if (this.signupForm.invalid) return;
 
+    this.submitting.set(true);
     const formData = this.signupForm.value;
 
-    this.authService.signup(formData).subscribe({
+    this.authService.signup(formData).pipe(
+      finalize(() => this.submitting.set(false))
+    ).subscribe({
       next: (res: any) => {
-        // Optionally log the user in automatically
         if (res.token) {
           this.authService.setToken(res.token);
           this.authService.setUserId(res.user.id);
@@ -48,7 +52,6 @@ export class SignupComponent {
         this.errors = [];
       },
       error: (err: any) => {
-        // Capture Rails validation errors if returned as { errors: [...] }
         if (err.error && err.error.errors) {
           this.errors = err.error.errors;
         } else {

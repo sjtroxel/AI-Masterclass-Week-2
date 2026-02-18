@@ -1,7 +1,8 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Meetup } from '../../../shared/models/meetup';
 import { MeetupService } from '../../../core/services/meetup';
 import { DatePipe } from '@angular/common';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-meetup-card',
@@ -31,14 +32,23 @@ export class MeetupCardComponent {
 
   participantCount = computed(() => this.meetup().meetup_participants?.length ?? 0);
 
+  joining = signal(false);
+  leaving = signal(false);
+
   joinMeetup() {
-    this.meetupService.joinMeetup(this.meetup().id);
+    this.joining.set(true);
+    this.meetupService.joinMeetup(this.meetup().id).pipe(
+      finalize(() => this.joining.set(false))
+    ).subscribe();
   }
 
   leaveMeetup() {
     const userId = this.currentUserId();
     if (userId) {
-      this.meetupService.leaveMeetup(this.meetup().id, userId);
+      this.leaving.set(true);
+      this.meetupService.leaveMeetup(this.meetup().id, userId).pipe(
+        finalize(() => this.leaving.set(false))
+      ).subscribe();
     }
   }
 }

@@ -34,9 +34,15 @@
       <button class="btn-danger" (click)="delete.emit(meetup().id)">Delete</button>
     } @else {
       @if (isParticipant()) {
-        <button class="btn-secondary" (click)="leaveMeetup()">Leave</button>
+        <button class="btn-secondary gap-2" (click)="leaveMeetup()" [disabled]="leaving()">
+          @if (leaving()) { <span class="spinner" aria-hidden="true"></span> }
+          Leave
+        </button>
       } @else {
-        <button class="btn-primary" (click)="joinMeetup()">Join</button>
+        <button class="btn-primary gap-2" (click)="joinMeetup()" [disabled]="joining()">
+          @if (joining()) { <span class="spinner" aria-hidden="true"></span> }
+          Join
+        </button>
       }
     }
   </div>

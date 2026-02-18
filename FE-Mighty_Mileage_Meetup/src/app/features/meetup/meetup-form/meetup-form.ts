@@ -2,6 +2,7 @@ import { Component, effect, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { finalize } from 'rxjs';
 import { MeetupService } from '../../../core/services/meetup';
 import { Meetup } from '../../../shared/models/meetup';
 
@@ -18,6 +19,7 @@ export class MeetupFormComponent {
 
   form: FormGroup;
   showForm = signal(true);
+  submitting = signal(false);
 
   activities = ['run', 'bicycle'];
 
@@ -65,21 +67,21 @@ export class MeetupFormComponent {
   onSubmit() {
     if (this.form.invalid) return;
 
+    this.submitting.set(true);
     const formData = this.form.value;
     const editing = this.meetupService.meetupToEdit();
 
-    if (editing) {
-      const updated: Meetup = { ...editing, ...formData };
-      this.meetupService.updateMeetup(updated);
-      this.meetupService.clearMeetupToEdit();
-    } else {
-      const newMeetup: Meetup = { id: Date.now(), ...formData, user_id: 1 };
-      this.meetupService.addMeetup(newMeetup);
-    }
+    const request$ = editing
+      ? this.meetupService.updateMeetup({ ...editing, ...formData })
+      : this.meetupService.addMeetup({ id: Date.now(), ...formData, user_id: 1 } as Meetup);
 
-    // Reset and hide form
-    this.form.reset();
-    this.showForm.set(false);
-    console.log('Meetup submitted and form closed');
+    if (editing) this.meetupService.clearMeetupToEdit();
+
+    request$.pipe(
+      finalize(() => this.submitting.set(false))
+    ).subscribe(() => {
+      this.form.reset();
+      this.showForm.set(false);
+    });
   }
 }

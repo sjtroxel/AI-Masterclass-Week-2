@@ -137,7 +137,7 @@ describe('CommentService', () => {
 
   describe('addComment()', () => {
     it('POSTs to /meetups/:id/comments with wrapped content', () => {
-      service.addComment(5, 'Nice meetup!');
+      service.addComment(5, 'Nice meetup!').subscribe();
 
       const req = httpMock.expectOne(`${API}/meetups/5/comments`);
       expect(req.request.method).toBe('POST');
@@ -148,7 +148,7 @@ describe('CommentService', () => {
     it('appends the new comment to the comments signal', () => {
       service.seedComments([mockComment]);
 
-      service.addComment(5, 'Another comment');
+      service.addComment(5, 'Another comment').subscribe();
 
       const req = httpMock.expectOne(`${API}/meetups/5/comments`);
       req.flush(mockComment2);

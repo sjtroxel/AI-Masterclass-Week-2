@@ -1,15 +1,17 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable, tap, catchError, EMPTY } from 'rxjs';
 import { Comment } from '../../shared/models/comment';
 import { environment } from '../../../environments/environment';
+import { ToastService } from './toast';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommentService {
   private readonly apiUrl = environment.apiUrl;
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private toast = inject(ToastService);
 
   // Signals
   private commentsSignal = signal<Comment[]>([]);
@@ -46,20 +48,22 @@ export class CommentService {
   }
 
   // Add a new comment to a meetup
-  addComment(meetupId: number, content: string) {
-    this.http
+  addComment(meetupId: number, content: string): Observable<Comment> {
+    return this.http
       .post<Comment>(`${this.apiUrl}/meetups/${meetupId}/comments`, {
         comment: { content },
       })
-      .subscribe({
-        next: (created) => {
+      .pipe(
+        tap((created) => {
           this.commentsSignal.set([...this.commentsSignal(), created]);
-        },
-        error: (err) => {
+          this.toast.success('Comment posted!');
+        }),
+        catchError((err) => {
           console.error('Error adding comment:', err);
-          window.alert('Failed to add comment. Please try again.');
-        },
-      });
+          this.toast.error('Failed to add comment. Please try again.');
+          return EMPTY;
+        })
+      );
   }
 
   // Prime the signal from inline meetup data (no HTTP call needed)

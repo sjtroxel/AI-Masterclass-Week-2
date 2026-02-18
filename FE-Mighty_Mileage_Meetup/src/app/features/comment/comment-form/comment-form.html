@@ -18,7 +18,8 @@
           [class.opacity-100]="charCount() > 1800">
       {{ charCount() }} / 2000
     </span>
-    <button class="btn-primary" type="submit" [disabled]="form.invalid">
+    <button class="btn-primary gap-2" type="submit" [disabled]="form.invalid || submitting()">
+      @if (submitting()) { <span class="spinner" aria-hidden="true"></span> }
       Post Comment
     </button>
   </div>

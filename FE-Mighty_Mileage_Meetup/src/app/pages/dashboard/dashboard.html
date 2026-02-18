@@ -5,7 +5,12 @@
   <p>Loading meetups...</p>
 } @else {
   @if (meetups().length === 0) {
-    <p>No meetups yet. Create one to get started!</p>
+    <div class="flex flex-col items-center justify-center py-16 text-center">
+      <span class="text-5xl mb-4">🏃</span>
+      <h3 class="text-lg font-bold text-text-primary m-0 mb-1">No meetups yet</h3>
+      <p class="text-sm text-text-secondary/70 m-0 mb-4">Create your first meetup and start moving!</p>
+      <button class="btn-primary" (click)="openModal()">Create Meetup</button>
+    </div>
   } @else {
     <div class="meetup-list">
       @for (meetup of meetups(); track meetup.id) {

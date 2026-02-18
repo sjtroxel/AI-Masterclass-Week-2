@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthenticationService } from '../../core/services/authentication';
 import { MeetupService } from '../../core/services/meetup';
 
@@ -14,6 +15,7 @@ import { MeetupService } from '../../core/services/meetup';
 export class LoginComponent {
   loginForm: FormGroup;
   isError = false;
+  submitting = signal(false);
 
   constructor(
     private meetupService: MeetupService,
@@ -30,11 +32,13 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.invalid) return;
 
+    this.submitting.set(true);
     const { username, password } = this.loginForm.value;
 
-    this.authService.login(username, password).subscribe({
+    this.authService.login(username, password).pipe(
+      finalize(() => this.submitting.set(false))
+    ).subscribe({
       next: (res: any) => {
-        console.log(res);
         this.authService.setToken(res.token);
         this.authService.setUserId(res.user.id);
         this.authService.setUser(username);

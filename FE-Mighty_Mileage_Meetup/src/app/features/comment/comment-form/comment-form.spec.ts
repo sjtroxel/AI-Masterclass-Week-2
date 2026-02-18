@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { CommentFormComponent } from './comment-form';
 import { CommentService } from '../../../core/services/comment';
 
@@ -12,7 +13,7 @@ describe('CommentFormComponent', () => {
 
   beforeEach(() => {
     commentServiceMock = {
-      addComment: vi.fn(),
+      addComment: vi.fn().mockReturnValue(of(null)),
       comments: vi.fn().mockReturnValue([]),
     };
 

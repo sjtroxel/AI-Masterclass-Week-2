@@ -5,10 +5,15 @@
     <div>
       <h3 class="text-sm font-bold tracking-tight text-text-primary uppercase mb-2">Title & Activity</h3>
       <div class="title-activity-row">
-        <input id="title" type="text" formControlName="title" placeholder="Meetup Title"
-               class="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-text-primary
-                      text-sm transition-all duration-200
-                      focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent" />
+        <div class="flex flex-col flex-1 gap-1">
+          <input id="title" type="text" formControlName="title" placeholder="Meetup Title"
+                 class="w-full px-3 py-2 rounded-lg border border-border bg-background text-text-primary
+                        text-sm transition-all duration-200
+                        focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent" />
+          @if (form.get('title')?.invalid && form.get('title')?.touched) {
+            <small class="text-error text-xs">Title is required</small>
+          }
+        </div>
 
         <div class="activity-options">
           @for (activity of activities; track activity) {
@@ -31,6 +36,9 @@
                  class="w-full px-2 py-1.5 rounded-lg border border-border bg-background text-text-primary
                         text-sm transition-all duration-200
                         focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent" />
+          @if (form.get('start_date_time')?.invalid && form.get('start_date_time')?.touched) {
+            <small class="text-error text-xs">Start date is required</small>
+          }
         </div>
 
         <div class="form-col">
@@ -39,6 +47,9 @@
                  class="w-full px-2 py-1.5 rounded-lg border border-border bg-background text-text-primary
                         text-sm transition-all duration-200
                         focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent" />
+          @if (form.get('end_date_time')?.invalid && form.get('end_date_time')?.touched) {
+            <small class="text-error text-xs">End date is required</small>
+          }
         </div>
 
         <div class="form-col">
@@ -47,6 +58,9 @@
                  class="w-full px-2 py-1.5 rounded-lg border border-border bg-background text-text-primary
                         text-sm transition-all duration-200
                         focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent compact-field" />
+          @if (form.get('guests')?.invalid && form.get('guests')?.touched) {
+            <small class="text-error text-xs">At least 1 guest required</small>
+          }
         </div>
       </div>
     </div>
@@ -59,10 +73,15 @@
                class="px-2 py-1.5 rounded-lg border border-border bg-background text-text-primary
                       text-sm transition-all duration-200
                       focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent" />
-        <input id="zip_code" type="text" formControlName="zip_code" placeholder="ZIP" (blur)="lookupZip()"
-               class="px-2 py-1.5 rounded-lg border border-border bg-background text-text-primary
-                      text-sm transition-all duration-200
-                      focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent" />
+        <div class="flex flex-col gap-1">
+          <input id="zip_code" type="text" formControlName="zip_code" placeholder="ZIP" (blur)="lookupZip()"
+                 class="px-2 py-1.5 rounded-lg border border-border bg-background text-text-primary
+                        text-sm transition-all duration-200
+                        focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent" />
+          @if (form.get('location.zip_code')?.invalid && form.get('location.zip_code')?.touched) {
+            <small class="text-error text-xs">ZIP code is required</small>
+          }
+        </div>
         <input id="city" type="text" formControlName="city" placeholder="City"
                class="px-2 py-1.5 rounded-lg border border-border bg-background text-text-primary
                       text-sm transition-all duration-200
@@ -79,7 +98,10 @@
     </div>
 
     <!-- Submit Button -->
-    <button type="submit" class="btn-primary save-btn">Save Meetup</button>
+    <button type="submit" class="btn-primary save-btn gap-2" [disabled]="form.invalid || submitting()">
+      @if (submitting()) { <span class="spinner" aria-hidden="true"></span> }
+      Save Meetup
+    </button>
 
   </form>
 </div>

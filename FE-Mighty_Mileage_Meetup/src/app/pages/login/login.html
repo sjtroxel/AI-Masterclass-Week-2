@@ -30,6 +30,9 @@
       <p class="text-error text-sm text-center m-0">Username and Password credentials failed. Please try again!</p>
     }
 
-    <button class="btn-primary w-full py-2.5 text-base" type="submit">Sign In</button>
+    <button class="btn-primary w-full py-2.5 text-base gap-2" type="submit" [disabled]="submitting()">
+      @if (submitting()) { <span class="spinner" aria-hidden="true"></span> }
+      Sign In
+    </button>
   </form>
 </div>

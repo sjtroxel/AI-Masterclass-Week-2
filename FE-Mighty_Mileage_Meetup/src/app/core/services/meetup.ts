@@ -1,16 +1,18 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable, tap, catchError, EMPTY } from 'rxjs';
 import { Meetup, MeetupParticipant } from '../../shared/models/meetup';
 import { Comment } from '../../shared/models/comment';
 import { environment } from '../../../environments/environment';
+import { ToastService } from './toast';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MeetupService {
   private readonly apiUrl = `${environment.apiUrl}/meetups`;
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private toast = inject(ToastService);
 
   // Signals
   private meetupsSignal = signal<Meetup[]>([]);
@@ -71,7 +73,7 @@ export class MeetupService {
   }
 
   // Add a new meetup
-  addMeetup(newMeetup: Meetup) {
+  addMeetup(newMeetup: Meetup): Observable<Meetup> {
     const payload = {
       meetup: {
         title: newMeetup.title,
@@ -89,17 +91,22 @@ export class MeetupService {
       },
     };
 
-    this.http.post<Meetup>(this.apiUrl, payload).subscribe({
-      next: (created) => {
+    return this.http.post<Meetup>(this.apiUrl, payload).pipe(
+      tap((created) => {
         const current = this.ensureArray(this.meetupsSignal());
         this.meetupsSignal.set([...current, created]);
-      },
-      error: (err) => console.error('Error adding meetup:', err),
-    });
+        this.toast.success('Meetup created!');
+      }),
+      catchError((err) => {
+        console.error('Error adding meetup:', err);
+        this.toast.error('Failed to create meetup.');
+        return EMPTY;
+      })
+    );
   }
 
   // Update existing meetup
-  updateMeetup(updatedMeetup: Meetup) {
+  updateMeetup(updatedMeetup: Meetup): Observable<Meetup> {
     const payload = {
       meetup: {
         title: updatedMeetup.title,
@@ -117,32 +124,42 @@ export class MeetupService {
       },
     };
 
-    this.http.put<Meetup>(`${this.apiUrl}/${updatedMeetup.id}`, payload).subscribe({
-      next: (saved) => {
+    return this.http.put<Meetup>(`${this.apiUrl}/${updatedMeetup.id}`, payload).pipe(
+      tap((saved) => {
         const current = this.ensureArray(this.meetupsSignal());
         this.meetupsSignal.set(
           current.map((m) => (m.id === saved.id ? saved : m))
         );
-      },
-      error: (err) => console.error('Error updating meetup:', err),
-    });
+        this.toast.success('Meetup updated!');
+      }),
+      catchError((err) => {
+        console.error('Error updating meetup:', err);
+        this.toast.error('Failed to update meetup.');
+        return EMPTY;
+      })
+    );
   }
 
   // Delete a meetup
-  deleteMeetup(id: number) {
-    this.http.delete<void>(`${this.apiUrl}/${id}`).subscribe({
-      next: () => {
+  deleteMeetup(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      tap(() => {
         const current = this.ensureArray(this.meetupsSignal());
         this.meetupsSignal.set(current.filter((m) => m.id !== id));
-      },
-      error: (err) => console.error('Error deleting meetup:', err),
-    });
+        this.toast.success('Meetup deleted.');
+      }),
+      catchError((err) => {
+        console.error('Error deleting meetup:', err);
+        this.toast.error('Failed to delete meetup.');
+        return EMPTY;
+      })
+    );
   }
 
   // Join a meetup
-  joinMeetup(id: number) {
-    this.http.post<MeetupParticipant>(`${this.apiUrl}/${id}/join`, {}).subscribe({
-      next: (participant) => {
+  joinMeetup(id: number): Observable<MeetupParticipant> {
+    return this.http.post<MeetupParticipant>(`${this.apiUrl}/${id}/join`, {}).pipe(
+      tap((participant) => {
         const current = this.ensureArray(this.meetupsSignal());
         this.meetupsSignal.set(
           current.map((m) =>
@@ -151,18 +168,20 @@ export class MeetupService {
               : m
           )
         );
-      },
-      error: (err) => {
+        this.toast.success('Joined meetup!');
+      }),
+      catchError((err) => {
         console.error('Error joining meetup:', err);
-        window.alert('Failed to join meetup. Please try again.');
-      },
-    });
+        this.toast.error('Failed to join meetup. Please try again.');
+        return EMPTY;
+      })
+    );
   }
 
   // Leave a meetup
-  leaveMeetup(id: number, userId: number) {
-    this.http.delete<void>(`${this.apiUrl}/${id}/leave`).subscribe({
-      next: () => {
+  leaveMeetup(id: number, userId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}/leave`).pipe(
+      tap(() => {
         const current = this.ensureArray(this.meetupsSignal());
         this.meetupsSignal.set(
           current.map((m) =>
@@ -171,11 +190,13 @@ export class MeetupService {
               : m
           )
         );
-      },
-      error: (err) => {
+        this.toast.success('Left meetup.');
+      }),
+      catchError((err) => {
         console.error('Error leaving meetup:', err);
-        window.alert('Failed to leave meetup. Please try again.');
-      },
-    });
+        this.toast.error('Failed to leave meetup. Please try again.');
+        return EMPTY;
+      })
+    );
   }
 }

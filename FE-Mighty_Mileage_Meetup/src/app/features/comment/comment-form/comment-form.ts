@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { CommentService } from '../../../core/services/comment';
 
 @Component({
@@ -17,6 +18,7 @@ export class CommentFormComponent {
 
   meetupId = input.required<number>();
 
+  submitting = signal(false);
   private contentLengthSignal = signal(0);
   charCount = this.contentLengthSignal.asReadonly();
 
@@ -32,8 +34,12 @@ export class CommentFormComponent {
 
   onSubmit(): void {
     if (this.form.invalid) return;
+    this.submitting.set(true);
     const content = this.form.get('content')!.value!;
-    this.commentService.addComment(this.meetupId(), content);
-    this.form.reset();
+    this.commentService.addComment(this.meetupId(), content).pipe(
+      finalize(() => this.submitting.set(false))
+    ).subscribe(() => {
+      this.form.reset();
+    });
   }
 }
