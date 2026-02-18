@@ -345,3 +345,271 @@ npm test
 npm start  # Angular :4200
 # Navigate to a meetup detail page — map renders below location panel
 ```
+
+---
+
+## Phase 3: Coordinate Selection (Interactive Map)
+
+### Goal
+Allow `MapComponent` to be used in `MeetupFormComponent` as a **location picker**: the user
+clicks anywhere on the map, coordinates are emitted, and a `ReverseGeocodingService` translates
+them back into address fields that auto-populate the form.
+
+### Design Decisions
+- `location` input becomes **optional** (`input<Location | null>(null)`) so the map can render
+  without a pre-existing address (new meetup creation). The `@if (m.location)` guard in
+  `meetup-detail.html` still prevents rendering without data in the detail view.
+- A new `interactive` input (`input<boolean>(false)`) enables click handling. When `false` (default),
+  the map is purely decorative — no changes to Phase 2 behaviour.
+- A new `coordinatesSelected` output emits `{ lat: number; lng: number }` on map click.
+- `ReverseGeocodingService` is a dedicated pure-query service (same pattern as `GeocodingService`).
+
+---
+
+### Files Touched
+
+| Action  | Path |
+|---------|------|
+| modify  | `src/app/shared/components/map/map.ts` — optional location, interactive input, output |
+| modify  | `src/app/shared/components/map/map.html` — `(leafletClick)` binding |
+| modify  | `src/app/shared/components/map/map.spec.ts` — new tests for interactive mode |
+| create  | `src/app/core/services/reverse-geocoding.ts` |
+| create  | `src/app/core/services/reverse-geocoding.spec.ts` |
+| modify  | `src/app/features/meetup/meetup-form/meetup-form.ts` — import MapComponent, handle output |
+| modify  | `src/app/features/meetup/meetup-form/meetup-form.html` — add `<app-map>` picker |
+| modify  | `src/app/features/meetup/meetup-form/meetup-form.spec.ts` — mock new services |
+
+---
+
+### Step A — Extend `MapComponent`
+
+**`map.ts` changes:**
+```typescript
+// location becomes optional (was input.required)
+location    = input<Location | null>(null);
+interactive = input<boolean>(false);
+
+coordinatesSelected = output<{ lat: number; lng: number }>();
+
+// Default center — geographic center of contiguous US
+private readonly DEFAULT_CENTER = latLng(39.5, -98.35);
+private readonly DEFAULT_ZOOM   = 4;
+
+// Separate signal for click-placed marker (does not geocode)
+private readonly clickedMarker = signal<LatLng | null>(null);
+
+// Updated leafletLayers: merges geocoded marker + clicked marker
+// Updated leafletOptions: falls back to DEFAULT_CENTER/ZOOM when no location
+
+// Click handler (only active when interactive):
+protected onMapClick(event: LeafletMouseEvent): void {
+  if (!this.interactive()) return;
+  this.clickedMarker.set(event.latlng);
+  this.coordinatesSelected.emit({ lat: event.latlng.lat, lng: event.latlng.lng });
+}
+```
+
+**`map.html`:** `(leafletClick)="onMapClick($event)"` added to the map `div`.
+
+---
+
+### Step B — `ReverseGeocodingService`
+
+**File:** `src/app/core/services/reverse-geocoding.ts`
+
+Nominatim reverse endpoint:
+```
+GET https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json
+```
+
+Nominatim reverse response → `Partial<Location>` mapping:
+```typescript
+{
+  address:  result.address.road         ?? result.address.hamlet ?? '',
+  city:     result.address.city         ?? result.address.town   ?? result.address.village ?? '',
+  state:    result.address.state        ?? '',
+  zip_code: result.address.postcode     ?? '',
+  country:  result.address.country_code?.toUpperCase() ?? '',
+}
+```
+
+- Uses `SKIP_AUTH` context (same pattern as `GeocodingService`)
+- On HTTP error → `toast.error('Reverse geocoding failed.')` + `EMPTY`
+- Returns `Observable<Partial<Location>>`
+
+---
+
+### Step C — Integration in `MeetupFormComponent`
+
+**`meetup-form.ts`:**
+- Inject `ReverseGeocodingService`
+- Add `MapComponent` to the `imports` array
+- Handler: `onCoordinatesSelected({ lat, lng })` → calls `reverseGeocode(lat, lng)` → subscribes →
+  `form.patchValue({ location: result })`
+
+**`meetup-form.html`:** Below the zip/city/state fields:
+```html
+<div class="map-picker-section">
+  <span class="label-text">🗺 Or click the map to auto-fill location</span>
+  <app-map [interactive]="true" (coordinatesSelected)="onCoordinatesSelected($event)" />
+</div>
+```
+No `[location]` binding — the `null` default shows the US center view.
+
+---
+
+### Step D — Tests
+
+**`map.spec.ts` additions:**
+1. `coordinatesSelected` emits when `interactive = true` and map is clicked
+2. `onMapClick()` is a no-op when `interactive = false`
+3. `leafletOptions()` returns US default center when `location` is null
+4. `leafletOptions()` still geocodes and centers when `location` is provided
+
+**`reverse-geocoding.spec.ts`** (mirrors `geocoding.spec.ts`):
+1. `should be created`
+2. GETs Nominatim reverse URL with correct `lat`, `lon`, `format=json` params
+3. Maps `address` fields → `Partial<Location>` (including town/village fallbacks)
+4. Calls `toast.error()` + returns EMPTY on HTTP 500
+
+**`meetup-form.spec.ts`:** Add providers:
+```typescript
+{ provide: GeocodingService,        useValue: { geocode: vi.fn(() => EMPTY) } },
+{ provide: ReverseGeocodingService, useValue: { reverseGeocode: vi.fn(() => EMPTY) } },
+```
+
+---
+
+### Verification — Phase 3
+
+```bash
+cd FE-Mighty_Mileage_Meetup
+
+# New service spec
+npm test -- src/app/core/services/reverse-geocoding.spec.ts
+
+# Full suite green (target: ~222+ tests)
+npm test
+
+# Visual check
+npm start
+# Open Create Meetup → map renders at US center
+# Click → address fields auto-populate via reverse geocoding
+```
+
+---
+
+## Phase 4: UX & Refinement
+
+### Goal
+Polishing the interactive map experience with three targeted improvements:
+1. **"Locate Me" button** — one-click geolocation centering via the browser Geolocation API
+2. **Animated click marker** — a bouncing pin drop animation when the user places a coordinate
+3. **Reverse-geocoding loading state** — a spinner in `MeetupFormComponent` while the address is being looked up
+
+---
+
+### Files Touched
+
+| Action  | Path |
+|---------|------|
+| modify  | `src/app/shared/components/map/map.ts` — inject `ToastService`, add `locateMe()`, animated `divIcon` for click marker |
+| modify  | `src/app/shared/components/map/map.html` — "Locate Me" button overlay |
+| modify  | `src/app/shared/components/map/map.scss` — `.locate-me-btn`, `.locate-pin` keyframe |
+| modify  | `src/app/shared/components/map/map.spec.ts` — 3 `locateMe()` tests |
+| modify  | `src/app/features/meetup/meetup-form/meetup-form.ts` — `isReverseGeocoding` signal, `finalize` in handler |
+| modify  | `src/app/features/meetup/meetup-form/meetup-form.html` — spinner overlay |
+| modify  | `src/app/features/meetup/meetup-form/meetup-form.spec.ts` — `isReverseGeocoding` default test |
+
+---
+
+### Step A — "Locate Me" Button (`MapComponent`)
+
+**`map.ts`:**
+- Inject `ToastService`
+- Add module-level `CLICK_MARKER_ICON` using Leaflet `divIcon` with class `locate-pin`
+- Update `leafletLayers` to use `CLICK_MARKER_ICON` for the click-placed marker
+- Add `protected locateMe(): void`:
+  - Guard: if `!navigator.geolocation` → `toast.error('Geolocation is not supported by your browser.')`
+  - `getCurrentPosition` success → `clickedMarker.set(latLng(lat, lng))` + `coordinatesSelected.emit(...)`
+  - `getCurrentPosition` error → `toast.error('Location permission denied.')`
+
+**`map.html`:** Wrap map `div` in a `<div class="map-container">`. Inside, after the map div, conditionally render the button when `interactive()`:
+```html
+@if (interactive()) {
+  <button type="button" class="locate-me-btn" (click)="locateMe()">Locate Me</button>
+}
+```
+
+**`map.scss`:** Add:
+- `.map-container { position: relative; }` — enables absolute positioning of the button
+- `.locate-me-btn` — absolute bottom-right, `z-index: 1000`, themed with `var(--button-bg)` / `var(--button-hover)`
+- `.locate-pin` — 16 × 16 circle using `var(--accent)`, with `pin-drop` keyframe animation
+- `@keyframes pin-drop` — scale from 0 + translateY(-12px) → scale 1 + translateY(0), 0.35s ease
+
+---
+
+### Step B — Loading State (`MeetupFormComponent`)
+
+**`meetup-form.ts`:**
+```typescript
+isReverseGeocoding = signal(false);
+
+onCoordinatesSelected(coords: { lat: number; lng: number }): void {
+  this.isReverseGeocoding.set(true);
+  this.reverseGeocodingService
+    .reverseGeocode(coords.lat, coords.lng)
+    .pipe(finalize(() => this.isReverseGeocoding.set(false)))
+    .subscribe((result) => {
+      this.form.patchValue({ location: result });
+    });
+}
+```
+
+**`meetup-form.html`:** Below `<app-map>`, inside the `map-picker-section` div:
+```html
+@if (isReverseGeocoding()) {
+  <div class="flex items-center gap-2 text-text-secondary text-sm mt-1">
+    <span class="spinner" aria-hidden="true"></span>
+    Finding address…
+  </div>
+}
+```
+
+---
+
+### Step C — Tests
+
+**`map.spec.ts`** — new `describe('locateMe()')` block (3 tests):
+1. Emits `coordinatesSelected` with correct lat/lng on geolocation success
+2. Calls `toast.error('Location permission denied.')` when `getCurrentPosition` errors
+3. Calls `toast.error('Geolocation is not supported by your browser.')` when `navigator.geolocation` is `undefined`
+
+Use `vi.stubGlobal('navigator', ...)` per test; restore with `vi.unstubAllGlobals()` in `afterEach`.
+
+**`meetup-form.spec.ts`** — add to "form initialisation" describe:
+```typescript
+it('should have isReverseGeocoding default to false', () => {
+  expect(component.isReverseGeocoding()).toBe(false);
+});
+```
+
+---
+
+### Verification — Phase 4
+
+```bash
+cd FE-Mighty_Mileage_Meetup
+
+# Full suite green (target: ~226+ tests)
+npm test
+
+# Build clean
+npm run build
+
+# Visual check
+npm start
+# Open Create Meetup
+# Click map → spinner appears briefly → address fields auto-fill
+# Click "Locate Me" → browser permission prompt → map centers on current position
+```

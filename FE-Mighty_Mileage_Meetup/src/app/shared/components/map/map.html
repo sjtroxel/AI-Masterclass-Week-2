@@ -1,10 +1,16 @@
 @if (leafletOptions(); as opts) {
-  <div
-    class="map-wrapper rounded-xl border border-border overflow-hidden"
-    leaflet
-    [leafletOptions]="opts"
-    [leafletLayers]="leafletLayers()"
-  ></div>
+  <div class="map-container">
+    <div
+      class="map-wrapper rounded-xl border border-border overflow-hidden"
+      leaflet
+      [leafletOptions]="opts"
+      [leafletLayers]="leafletLayers()"
+      (leafletClick)="onMapClick($event)"
+    ></div>
+    @if (interactive()) {
+      <button type="button" class="locate-me-btn" (click)="locateMe()">Locate Me</button>
+    }
+  </div>
 } @else {
   <p class="loading-text text-text-secondary text-sm">Locating on map…</p>
 }

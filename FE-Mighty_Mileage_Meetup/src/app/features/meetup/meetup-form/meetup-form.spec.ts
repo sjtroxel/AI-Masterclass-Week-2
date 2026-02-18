@@ -1,10 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClientModule, provideHttpClient } from '@angular/common/http';
-import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
+import { of, EMPTY } from 'rxjs';
 import { MeetupFormComponent } from './meetup-form';
 import { MeetupService } from '../../../core/services/meetup';
+import { GeocodingService } from '../../../core/services/geocoding';
+import { ReverseGeocodingService } from '../../../core/services/reverse-geocoding';
+import { MapComponent } from '../../../shared/components/map/map';
 import { Meetup } from '../../../shared/models/meetup';
 
 describe('MeetupFormComponent', () => {
@@ -32,12 +35,18 @@ describe('MeetupFormComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: MeetupService, useValue: meetupServiceMock },
+        { provide: GeocodingService, useValue: { geocode: vi.fn(() => EMPTY) } },
+        { provide: ReverseGeocodingService, useValue: { reverseGeocode: vi.fn(() => EMPTY) } },
       ],
     })
       .overrideComponent(MeetupFormComponent, {
         // Remove HttpClientModule from the component's own imports so the
         // test-level provideHttpClient/provideHttpClientTesting take effect.
         remove: { imports: [HttpClientModule] },
+      })
+      // Prevent Leaflet from initialising in happy-dom (same reason map.spec uses NO_ERRORS_SCHEMA)
+      .overrideComponent(MapComponent, {
+        set: { imports: [], schemas: [NO_ERRORS_SCHEMA] },
       });
 
     fixture = TestBed.createComponent(MeetupFormComponent);
@@ -88,6 +97,10 @@ describe('MeetupFormComponent', () => {
 
     it('should be invalid when required fields are empty', () => {
       expect(component.form.valid).toBe(false);
+    });
+
+    it('should have isReverseGeocoding default to false', () => {
+      expect(component.isReverseGeocoding()).toBe(false);
     });
   });
 

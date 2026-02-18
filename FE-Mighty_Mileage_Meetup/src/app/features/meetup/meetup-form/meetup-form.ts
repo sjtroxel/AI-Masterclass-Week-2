@@ -4,22 +4,26 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { MeetupService } from '../../../core/services/meetup';
+import { ReverseGeocodingService } from '../../../core/services/reverse-geocoding';
 import { Meetup } from '../../../shared/models/meetup';
+import { MapComponent } from '../../../shared/components/map/map';
 
 @Component({
   selector: 'app-meetup-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, MapComponent],
   templateUrl: './meetup-form.html',
   styleUrl: './meetup-form.scss'
 })
 export class MeetupFormComponent {
   meetupService = inject(MeetupService);
   http = inject(HttpClient);
+  private readonly reverseGeocodingService = inject(ReverseGeocodingService);
 
   form: FormGroup;
   showForm = signal(true);
   submitting = signal(false);
+  isReverseGeocoding = signal(false);
 
   activities = ['run', 'bicycle'];
 
@@ -44,6 +48,16 @@ export class MeetupFormComponent {
       const editing = this.meetupService.meetupToEdit();
       if (editing) this.form.patchValue(editing);
     });
+  }
+
+  onCoordinatesSelected(coords: { lat: number; lng: number }): void {
+    this.isReverseGeocoding.set(true);
+    this.reverseGeocodingService
+      .reverseGeocode(coords.lat, coords.lng)
+      .pipe(finalize(() => this.isReverseGeocoding.set(false)))
+      .subscribe((result) => {
+        this.form.patchValue({ location: result });
+      });
   }
 
   lookupZip() {

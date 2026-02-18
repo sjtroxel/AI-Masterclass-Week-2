@@ -2,6 +2,10 @@
   display: block;
 }
 
+.map-container {
+  position: relative;
+}
+
 .inner-container {
   padding: 1.5rem !important;
 }
@@ -14,4 +18,46 @@
 
 .loading-text {
   padding: 1rem 0;
+}
+
+.locate-me-btn {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  z-index: 1000;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--card-bg);
+  background-color: var(--button-bg);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--button-hover);
+  }
+}
+
+// Animated drop for user-placed click marker
+:host ::ng-deep .locate-pin {
+  width: 16px;
+  height: 16px;
+  background-color: var(--accent);
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  animation: pin-drop 0.35s cubic-bezier(0.17, 0.67, 0.49, 1.6) both;
+}
+
+@keyframes pin-drop {
+  from {
+    transform: scale(0) translateY(-12px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }

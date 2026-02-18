@@ -3,6 +3,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, EMPTY } from 'rxjs';
 import { MapComponent } from './map';
 import { GeocodingService } from '../../../core/services/geocoding';
+import { ToastService } from '../../../core/services/toast';
 import { Location } from '../../models/location';
 
 const mockLocation: Location = {
@@ -91,6 +92,130 @@ describe('MapComponent', () => {
 
     it('leafletLayers() is an empty array before geocoding resolves', () => {
       expect((component as any).leafletLayers()).toEqual([]);
+    });
+  });
+
+  describe('when location is null (no address provided)', () => {
+    beforeEach(() => {
+      mockGeocode = vi.fn(() => EMPTY);
+
+      TestBed.configureTestingModule({
+        imports: [MapComponent],
+        providers: [{ provide: GeocodingService, useValue: { geocode: mockGeocode } }],
+        schemas: [NO_ERRORS_SCHEMA],
+      });
+
+      fixture = TestBed.createComponent(MapComponent);
+      component = fixture.componentInstance;
+      // location defaults to null — no setInput needed
+      fixture.detectChanges();
+    });
+
+    it('leafletOptions() returns US default center and zoom 4', () => {
+      const opts = (component as any).leafletOptions();
+      expect(opts).not.toBeNull();
+      expect(opts.center.lat).toBeCloseTo(39.5);
+      expect(opts.center.lng).toBeCloseTo(-98.35);
+      expect(opts.zoom).toBe(4);
+    });
+  });
+
+  describe('interactive mode', () => {
+    beforeEach(() => {
+      mockGeocode = vi.fn(() => EMPTY);
+
+      TestBed.configureTestingModule({
+        imports: [MapComponent],
+        providers: [{ provide: GeocodingService, useValue: { geocode: mockGeocode } }],
+        schemas: [NO_ERRORS_SCHEMA],
+      });
+
+      fixture = TestBed.createComponent(MapComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('coordinatesSelected emits when interactive=true and map is clicked', () => {
+      fixture.componentRef.setInput('interactive', true);
+      fixture.detectChanges();
+
+      const emitSpy = vi.spyOn(component.coordinatesSelected, 'emit');
+      (component as any).onMapClick({ latlng: { lat: 45.52, lng: -122.67 } });
+
+      expect(emitSpy).toHaveBeenCalledWith({ lat: 45.52, lng: -122.67 });
+    });
+
+    it('onMapClick is a no-op when interactive=false', () => {
+      fixture.componentRef.setInput('interactive', false);
+      fixture.detectChanges();
+
+      const emitSpy = vi.spyOn(component.coordinatesSelected, 'emit');
+      (component as any).onMapClick({ latlng: { lat: 45.52, lng: -122.67 } });
+
+      expect(emitSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('locateMe()', () => {
+    let toast: ToastService;
+
+    beforeEach(() => {
+      mockGeocode = vi.fn(() => EMPTY);
+
+      TestBed.configureTestingModule({
+        imports: [MapComponent],
+        providers: [{ provide: GeocodingService, useValue: { geocode: mockGeocode } }],
+        schemas: [NO_ERRORS_SCHEMA],
+      });
+
+      fixture = TestBed.createComponent(MapComponent);
+      component = fixture.componentInstance;
+      toast = TestBed.inject(ToastService);
+      fixture.componentRef.setInput('interactive', true);
+      fixture.detectChanges();
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it('emits coordinatesSelected with the position on geolocation success', () => {
+      const mockPosition = { coords: { latitude: 45.52, longitude: -122.67 } };
+      vi.stubGlobal('navigator', {
+        geolocation: {
+          getCurrentPosition: vi.fn((success: (p: unknown) => void) => success(mockPosition)),
+        },
+      });
+
+      const emitSpy = vi.spyOn(component.coordinatesSelected, 'emit');
+      (component as any).locateMe();
+
+      expect(emitSpy).toHaveBeenCalledWith({ lat: 45.52, lng: -122.67 });
+    });
+
+    it('calls toast.error when geolocation permission is denied', () => {
+      vi.stubGlobal('navigator', {
+        geolocation: {
+          getCurrentPosition: vi.fn(
+            (_success: unknown, error: (e: unknown) => void) =>
+              error({ code: 1, message: 'Permission denied' }),
+          ),
+        },
+      });
+
+      const toastSpy = vi.spyOn(toast, 'error');
+      (component as any).locateMe();
+
+      expect(toastSpy).toHaveBeenCalledWith('Location permission denied.');
+    });
+
+    it('calls toast.error when geolocation is not supported by the browser', () => {
+      vi.stubGlobal('navigator', { geolocation: undefined });
+
+      const toastSpy = vi.spyOn(toast, 'error');
+      (component as any).locateMe();
+
+      expect(toastSpy).toHaveBeenCalledWith('Geolocation is not supported by your browser.');
     });
   });
 });

@@ -97,6 +97,18 @@
       </div>
     </div>
 
+    <!-- Section 4: Map Picker -->
+    <div class="map-picker-section">
+      <span class="label-text text-xs font-semibold text-text-secondary uppercase">Or click the map to auto-fill location</span>
+      <app-map [interactive]="true" (coordinatesSelected)="onCoordinatesSelected($event)" />
+      @if (isReverseGeocoding()) {
+        <div class="flex items-center gap-2 text-text-secondary text-sm mt-1">
+          <span class="spinner" aria-hidden="true"></span>
+          Finding address…
+        </div>
+      }
+    </div>
+
     <!-- Submit Button -->
     <button type="submit" class="btn-primary save-btn gap-2" [disabled]="form.invalid || submitting()">
       @if (submitting()) { <span class="spinner" aria-hidden="true"></span> }
