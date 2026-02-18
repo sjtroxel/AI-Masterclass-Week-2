@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, ActivatedRoute } from '@angular/router';
 import { signal } from '@angular/core';
+import { EMPTY } from 'rxjs';
 import { MeetupDetailComponent } from './meetup-detail';
 import { MeetupService } from '../../core/services/meetup';
 import { CommentService } from '../../core/services/comment';
+import { GeocodingService } from '../../core/services/geocoding';
 import { Meetup } from '../../shared/models/meetup';
 import { Comment } from '../../shared/models/comment';
 
@@ -62,6 +64,7 @@ describe('MeetupDetailComponent', () => {
           provideRouter([]),
           { provide: MeetupService, useValue: meetupServiceMock },
           { provide: CommentService, useValue: commentServiceMock },
+          { provide: GeocodingService, useValue: { geocode: vi.fn(() => EMPTY) } },
           {
             provide: ActivatedRoute,
             useValue: { snapshot: { paramMap: { get: () => '42' } } },
@@ -189,6 +192,7 @@ describe('MeetupDetailComponent', () => {
           provideRouter([]),
           { provide: MeetupService, useValue: meetupServiceMock },
           { provide: CommentService, useValue: commentServiceMock },
+          { provide: GeocodingService, useValue: { geocode: vi.fn(() => EMPTY) } },
           {
             provide: ActivatedRoute,
             useValue: { snapshot: { paramMap: { get: () => null } } },

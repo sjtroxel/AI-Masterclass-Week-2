@@ -168,7 +168,7 @@ Test cases:
 
 ---
 
-## Verification
+## Verification — Phase 1
 
 ```bash
 cd FE-Mighty_Mileage_Meetup
@@ -181,4 +181,167 @@ npm test -- --reporter=verbose 2>&1 | grep -E "(geocoding|PASS|FAIL)"
 
 # 3. Full suite green
 npm test
+```
+
+---
+
+## Phase 2: Reusable MapComponent
+
+### Context
+A standalone `MapComponent` that accepts a `Location` signal input, internally geocodes it via
+`GeocodingService`, and renders a Leaflet tile map with a marker. Integrated into
+`MeetupDetailComponent` so users can see where a meetup is happening.
+
+### Design System Alignment (theme-scout)
+The map container uses existing theme tokens — no hardcoded values:
+- `rounded-xl border border-border overflow-hidden` — matches the info panels in `meetup-detail.html`
+- `bg-card` — white in light, `#0a2b1f` in dark, via `--card-bg`
+- Leaflet's own tile layer is untouched; only the container chrome is themed
+
+### Files Touched
+
+| Action  | Path |
+|---------|------|
+| modify  | `angular.json` — add Leaflet marker images to `assets` array |
+| create  | `src/app/shared/components/map/map.ts` |
+| create  | `src/app/shared/components/map/map.html` |
+| create  | `src/app/shared/components/map/map.scss` |
+| create  | `src/app/shared/components/map/map.spec.ts` |
+| modify  | `src/app/pages/meetup-detail/meetup-detail.ts` — import `MapComponent` |
+| modify  | `src/app/pages/meetup-detail/meetup-detail.html` — add `<app-map>` |
+
+---
+
+### Step A — Leaflet Marker Asset Fix
+
+Leaflet's default marker PNGs use runtime URL detection that breaks under esbuild (Angular 20's
+default builder). The fix has two parts:
+
+**1. Copy images via `angular.json` assets:**
+```json
+{
+  "glob": "**/*",
+  "input": "./node_modules/leaflet/dist/images",
+  "output": "assets/leaflet/"
+}
+```
+
+**2. Override `Icon.Default` in the component class body (static, runs once):**
+```typescript
+import { Icon } from 'leaflet';
+
+Icon.Default.mergeOptions({
+  iconUrl: 'assets/leaflet/marker-icon.png',
+  iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
+  shadowUrl: 'assets/leaflet/marker-shadow.png',
+});
+```
+
+This is a well-known standard pattern and must run before any `marker()` call.
+
+---
+
+### Step B — `MapComponent`
+
+**File:** `src/app/shared/components/map/map.ts`
+
+```typescript
+// Inputs
+location = input.required<Location>();
+
+// Internal state
+private readonly geocoded = signal<GeocodedLocation | null>(null);
+
+// Derived Leaflet config (computed signals)
+protected readonly leafletOptions = computed<MapOptions | null>(() => { ... });
+protected readonly leafletLayers  = computed<Layer[]>(() => { ... });
+```
+
+**Signal flow:**
+1. `location` input arrives (required — parent guards with `@if (m.location)`)
+2. `effect()` in constructor watches `location()`, calls `geocodingService.geocode(location())`
+3. On success, `.subscribe(r => this.geocoded.set(r))`
+4. `leafletOptions` computed returns `null` until `geocoded()` resolves; then returns
+   `{ layers: [OSM tile layer], zoom: 14, center: latLng(lat, lng) }`
+5. `leafletLayers` computed returns `[]` until resolved; then `[marker(latLng(lat, lng))]`
+
+**Template pattern:**
+```html
+@if (leafletOptions(); as opts) {
+  <div class="map-wrapper rounded-xl border border-border overflow-hidden"
+       leaflet
+       [leafletOptions]="opts"
+       [leafletLayers]="leafletLayers()">
+  </div>
+} @else {
+  <p class="loading-text text-text-secondary text-sm">Locating on map…</p>
+}
+```
+
+**SCSS:**
+```scss
+:host { display: block; }
+.inner-container { padding: 1.5rem !important; }
+.map-wrapper { height: 300px; }
+```
+
+**Imports array:** `[LeafletDirective]` from `@bluehalo/ngx-leaflet`
+
+---
+
+### Step C — Integration in `MeetupDetailComponent`
+
+**meetup-detail.ts:** Add `MapComponent` to the `imports` array.
+
+**meetup-detail.html:** Insert after the existing location text panel:
+```html
+@if (m.location) {
+  <app-map [location]="m.location" />
+}
+```
+The existing `@if (m.location)` block already wraps the text panel — `<app-map>` lives just below
+it, with its own guard (defensive: `location` is `input.required`, so the guard must stay).
+
+---
+
+### Step D — Vitest Spec
+
+**File:** `src/app/shared/components/map/map.spec.ts`
+
+**Strategy:** Leaflet doesn't render in happy-dom (no real canvas/tiles), so we:
+1. Use `NO_ERRORS_SCHEMA` to suppress unknown `leaflet` attribute errors
+2. Mock `GeocodingService` with `vi.fn()` returning a controlled `Observable`
+3. Test the **signal state**, not DOM output
+
+**Test cases:**
+1. `should be created`
+2. Calls `geocodingService.geocode()` with the provided `Location` on init
+3. `leafletOptions()` is `null` before geocoding resolves
+4. `leafletOptions()` has `center` matching the resolved lat/lng after geocoding
+5. `leafletLayers()` returns an empty array before geocoding resolves
+6. `leafletLayers()` returns a single `Marker` at the correct position after geocoding
+
+**Key setup:**
+```typescript
+const mockGeocode = vi.fn(() => of({ lat: 45.52, lng: -122.67, displayName: 'Portland, OR' }));
+{ provide: GeocodingService, useValue: { geocode: mockGeocode } }
+```
+Use `fixture.componentRef.setInput('location', mockLocation)` to pass the required input.
+
+---
+
+### Verification — Phase 2
+
+```bash
+cd FE-Mighty_Mileage_Meetup
+
+# MapComponent spec only
+npm test -- src/app/shared/components/map/map.spec.ts
+
+# Full suite — all 212+ tests green
+npm test
+
+# Visual check (requires both servers running)
+npm start  # Angular :4200
+# Navigate to a meetup detail page — map renders below location panel
 ```

@@ -5,11 +5,12 @@ import { MeetupService } from '../../core/services/meetup';
 import { CommentService } from '../../core/services/comment';
 import { CommentListComponent } from '../../features/comment/comment-list/comment-list';
 import { CommentFormComponent } from '../../features/comment/comment-form/comment-form';
+import { MapComponent } from '../../shared/components/map/map';
 
 @Component({
   selector: 'app-meetup-detail',
   standalone: true,
-  imports: [DatePipe, RouterLink, CommentListComponent, CommentFormComponent],
+  imports: [DatePipe, RouterLink, CommentListComponent, CommentFormComponent, MapComponent],
   templateUrl: './meetup-detail.html',
   styleUrl: './meetup-detail.scss',
 })

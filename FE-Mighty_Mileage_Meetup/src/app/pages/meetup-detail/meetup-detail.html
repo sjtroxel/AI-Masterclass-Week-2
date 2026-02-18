@@ -46,6 +46,7 @@
           <span class="text-[0.7rem] font-bold uppercase tracking-wider text-text-secondary/70">📍 Location</span>
           <span class="text-sm font-semibold text-text-primary">{{ m.location.address }}, {{ m.location.city }}, {{ m.location.state }} {{ m.location.zip_code }}</span>
         </div>
+        <app-map [location]="m.location" class="mb-4" />
       }
     </div>
 

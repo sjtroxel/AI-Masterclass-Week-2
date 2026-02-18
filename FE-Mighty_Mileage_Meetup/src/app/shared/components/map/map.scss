@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+.inner-container {
+  padding: 1.5rem !important;
+}
+
+.map-wrapper {
+  height: 300px;
+  background-color: var(--card-bg);
+  border-color: var(--border);
+}
+
+.loading-text {
+  padding: 1rem 0;
+}
